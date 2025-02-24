@@ -5,6 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Share2, Settings2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import ReactMarkdown from "react-markdown";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 import {
   Select,
   SelectContent,
@@ -131,7 +134,7 @@ export default function Editor() {
             <textarea
               value={markdown}
               onChange={(e) => setMarkdown(e.target.value)}
-              placeholder="Enter your markdown here..."
+              placeholder="Enter your markdown here... (Try some math: $E = mc^2$)"
               className="w-full h-full resize-none bg-transparent font-mono text-sm focus:outline-none p-6 placeholder:text-[#86868b]"
               style={{ fontFamily: "'SF Mono', 'JetBrains Mono', monospace" }}
             />
@@ -152,7 +155,12 @@ export default function Editor() {
                 fontFamily: fontOptions.find(f => f.value === selectedFont)?.family 
               }}
             >
-              <ReactMarkdown>{markdown}</ReactMarkdown>
+              <ReactMarkdown
+                remarkPlugins={[remarkMath]}
+                rehypePlugins={[rehypeKatex]}
+              >
+                {markdown}
+              </ReactMarkdown>
             </motion.div>
           </AnimatePresence>
         </ResizablePanel>
