@@ -4,6 +4,7 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/componen
 import { Button } from "@/components/ui/button";
 import { Share2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import ReactMarkdown from "react-markdown";
 
 export default function Editor() {
   const [markdown, setMarkdown] = useState("");
@@ -45,11 +46,8 @@ export default function Editor() {
         <ResizableHandle />
 
         <ResizablePanel defaultSize={50} minSize={30}>
-          <div className="h-full p-4 prose prose-sm max-w-none">
-            {/* TODO: Add markdown rendering */}
-            <div className="font-sans">
-              {markdown || "Your preview will appear here..."}
-            </div>
+          <div className="h-full p-4 prose prose-sm dark:prose-invert max-w-none overflow-y-auto">
+            <ReactMarkdown>{markdown}</ReactMarkdown>
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
