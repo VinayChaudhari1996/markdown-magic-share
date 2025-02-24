@@ -24,11 +24,30 @@ import {
 } from "@/components/ui/sheet";
 
 const fontOptions = [
-  { value: "default", label: "Default", family: "system-ui" },
-  { value: "roboto", label: "Roboto", family: "'Roboto', sans-serif" },
-  { value: "open-sans", label: "Open Sans", family: "'Open Sans', sans-serif" },
-  { value: "lora", label: "Lora", family: "'Lora', serif" },
-  { value: "playfair", label: "Playfair Display", family: "'Playfair Display', serif" },
+  { value: "default", label: "System Default", family: "-apple-system, BlinkMacSystemFont, system-ui" },
+  { value: "poppins", label: "Poppins", family: "'Poppins', sans-serif" },
+  { value: "montserrat", label: "Montserrat", family: "'Montserrat', sans-serif" },
+  { value: "raleway", label: "Raleway", family: "'Raleway', sans-serif" },
+  { value: "source-sans", label: "Source Sans 3", family: "'Source Sans 3', sans-serif" },
+  { value: "nunito", label: "Nunito", family: "'Nunito', sans-serif" },
+  { value: "quicksand", label: "Quicksand", family: "'Quicksand', sans-serif" },
+  { value: "mulish", label: "Mulish", family: "'Mulish', sans-serif" },
+  { value: "work-sans", label: "Work Sans", family: "'Work Sans', sans-serif" },
+  { value: "dm-sans", label: "DM Sans", family: "'DM Sans', sans-serif" },
+  { value: "rubik", label: "Rubik", family: "'Rubik', sans-serif" },
+  { value: "lato", label: "Lato", family: "'Lato', sans-serif" },
+  { value: "merriweather", label: "Merriweather", family: "'Merriweather', serif" },
+  { value: "source-serif", label: "Source Serif 4", family: "'Source Serif 4', serif" },
+  { value: "crimson-pro", label: "Crimson Pro", family: "'Crimson Pro', serif" },
+  { value: "libre-baskerville", label: "Libre Baskerville", family: "'Libre Baskerville', serif" },
+  { value: "spectral", label: "Spectral", family: "'Spectral', serif" },
+  { value: "archivo", label: "Archivo", family: "'Archivo', sans-serif" },
+  { value: "space-grotesk", label: "Space Grotesk", family: "'Space Grotesk', sans-serif" },
+  { value: "ibm-plex-sans", label: "IBM Plex Sans", family: "'IBM Plex Sans', sans-serif" },
+  { value: "ibm-plex-serif", label: "IBM Plex Serif", family: "'IBM Plex Serif', serif" },
+  { value: "bitter", label: "Bitter", family: "'Bitter', serif" },
+  { value: "pt-serif", label: "PT Serif", family: "'PT Serif', serif" },
+  { value: "pt-sans", label: "PT Sans", family: "'PT Sans', sans-serif" },
 ];
 
 export default function Editor() {
@@ -49,39 +68,39 @@ export default function Editor() {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="h-screen w-full p-4 flex flex-col gap-4"
+      className="h-screen w-full p-8 flex flex-col gap-6 bg-[#f5f5f7]"
     >
-      <header className="flex items-center justify-between">
+      <header className="flex items-center justify-between max-w-[1200px] mx-auto w-full">
         <motion.h1 
           initial={{ x: -20 }}
           animate={{ x: 0 }}
-          className="text-2xl font-semibold"
+          className="text-2xl font-semibold text-[#1d1d1f]"
         >
           Markdown Magic Share
         </motion.h1>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="outline" size="icon" className="glass">
+              <Button variant="outline" size="icon" className="rounded-full bg-white/80 backdrop-blur-xl border-0 shadow-sm hover:bg-white/90">
                 <Settings2 className="h-4 w-4" />
               </Button>
             </SheetTrigger>
-            <SheetContent>
+            <SheetContent className="bg-white/80 backdrop-blur-xl">
               <SheetHeader>
-                <SheetTitle>Appearance Settings</SheetTitle>
-                <SheetDescription>
+                <SheetTitle className="text-[#1d1d1f]">Appearance Settings</SheetTitle>
+                <SheetDescription className="text-[#86868b]">
                   Customize how your markdown content is displayed.
                 </SheetDescription>
               </SheetHeader>
               <div className="mt-6">
-                <label className="text-sm font-medium mb-2 block">
+                <label className="text-sm font-medium mb-2 block text-[#1d1d1f]">
                   Preview Font
                 </label>
                 <Select value={selectedFont} onValueChange={setSelectedFont}>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full bg-white/60">
                     <SelectValue placeholder="Select font" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="max-h-[300px]">
                     {fontOptions.map((font) => (
                       <SelectItem key={font.value} value={font.value}>
                         {font.label}
@@ -92,7 +111,11 @@ export default function Editor() {
               </div>
             </SheetContent>
           </Sheet>
-          <Button onClick={handleShare} variant="outline" className="glass">
+          <Button 
+            onClick={handleShare} 
+            variant="outline" 
+            className="rounded-full bg-white/80 backdrop-blur-xl border-0 shadow-sm hover:bg-white/90"
+          >
             <Share2 className="mr-2 h-4 w-4" />
             Share
           </Button>
@@ -101,7 +124,7 @@ export default function Editor() {
 
       <ResizablePanelGroup
         direction="horizontal"
-        className="flex-1 rounded-lg border glass"
+        className="flex-1 rounded-2xl border bg-white/80 backdrop-blur-xl shadow-sm max-w-[1200px] mx-auto w-full overflow-hidden"
       >
         <ResizablePanel defaultSize={50} minSize={30}>
           <Card className="h-full border-0 rounded-none bg-transparent">
@@ -109,7 +132,8 @@ export default function Editor() {
               value={markdown}
               onChange={(e) => setMarkdown(e.target.value)}
               placeholder="Enter your markdown here..."
-              className="w-full h-full resize-none bg-transparent font-mono text-sm focus:outline-none p-4"
+              className="w-full h-full resize-none bg-transparent font-mono text-sm focus:outline-none p-6 placeholder:text-[#86868b]"
+              style={{ fontFamily: "'SF Mono', 'JetBrains Mono', monospace" }}
             />
           </Card>
         </ResizablePanel>
@@ -123,7 +147,7 @@ export default function Editor() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="h-full p-4 prose prose-sm dark:prose-invert max-w-none overflow-y-auto"
+              className="h-full p-6 prose prose-sm dark:prose-invert max-w-none overflow-y-auto"
               style={{ 
                 fontFamily: fontOptions.find(f => f.value === selectedFont)?.family 
               }}
