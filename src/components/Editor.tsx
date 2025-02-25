@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { Button } from "@/components/ui/button";
@@ -17,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "@/components/ui/card";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Sheet,
   SheetContent,
@@ -25,6 +25,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { backgroundPatterns, backgroundColors } from "@/lib/patterns";
 
 const fontOptions = [
   { value: "default", label: "System Default", family: "-apple-system, BlinkMacSystemFont, system-ui" },
@@ -56,6 +57,8 @@ const fontOptions = [
 export default function Editor() {
   const [markdown, setMarkdown] = useState("");
   const [selectedFont, setSelectedFont] = useState("default");
+  const [selectedPattern, setSelectedPattern] = useState("none");
+  const [selectedColor, setSelectedColor] = useState("white");
   const { toast } = useToast();
 
   const handleShare = () => {
@@ -67,14 +70,22 @@ export default function Editor() {
     });
   };
 
-  // Process the markdown content to convert \[ \] to $$ $$
   const processMarkdown = (content: string) => {
     return content
       .replace(/\\[\s]*\[([\s\S]*?)\\[\s]*\]/g, (_, math) => {
-        // Trim whitespace and ensure math is on its own line
         const trimmedMath = math.trim();
         return `$$\n${trimmedMath}\n$$`;
       });
+  };
+
+  const getBackgroundStyle = () => {
+    const pattern = backgroundPatterns.find(p => p.id === selectedPattern);
+    const color = backgroundColors.find(c => c.id === selectedColor);
+    
+    return {
+      backgroundColor: color?.color || '#ffffff',
+      backgroundImage: pattern?.pattern || 'none',
+    };
   };
 
   return (
@@ -105,22 +116,63 @@ export default function Editor() {
                   Customize how your markdown content is displayed.
                 </SheetDescription>
               </SheetHeader>
-              <div className="mt-6">
-                <label className="text-sm font-medium mb-2 block text-[#1d1d1f]">
-                  Preview Font
-                </label>
-                <Select value={selectedFont} onValueChange={setSelectedFont}>
-                  <SelectTrigger className="w-full bg-white/60">
-                    <SelectValue placeholder="Select font" />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-[300px]">
-                    {fontOptions.map((font) => (
-                      <SelectItem key={font.value} value={font.value}>
-                        {font.label}
-                      </SelectItem>
+              <div className="mt-6 space-y-6">
+                <div>
+                  <label className="text-sm font-medium mb-2 block text-[#1d1d1f]">
+                    Preview Font
+                  </label>
+                  <Select value={selectedFont} onValueChange={setSelectedFont}>
+                    <SelectTrigger className="w-full bg-white/60">
+                      <SelectValue placeholder="Select font" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <ScrollArea className="h-[200px]">
+                        {fontOptions.map((font) => (
+                          <SelectItem key={font.value} value={font.value}>
+                            {font.label}
+                          </SelectItem>
+                        ))}
+                      </ScrollArea>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium mb-2 block text-[#1d1d1f]">
+                    Background Pattern
+                  </label>
+                  <Select value={selectedPattern} onValueChange={setSelectedPattern}>
+                    <SelectTrigger className="w-full bg-white/60">
+                      <SelectValue placeholder="Select pattern" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {backgroundPatterns.map((pattern) => (
+                        <SelectItem key={pattern.id} value={pattern.id}>
+                          {pattern.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium mb-2 block text-[#1d1d1f]">
+                    Background Color
+                  </label>
+                  <div className="grid grid-cols-4 gap-2">
+                    {backgroundColors.map((color) => (
+                      <button
+                        key={color.id}
+                        onClick={() => setSelectedColor(color.id)}
+                        className={`w-8 h-8 rounded-full transition-all ${
+                          selectedColor === color.id ? 'ring-2 ring-offset-2 ring-blue-500' : ''
+                        }`}
+                        style={{ backgroundColor: color.color }}
+                        title={color.label}
+                      />
                     ))}
-                  </SelectContent>
-                </Select>
+                  </div>
+                </div>
               </div>
             </SheetContent>
           </Sheet>
@@ -156,13 +208,14 @@ export default function Editor() {
         <ResizablePanel defaultSize={50} minSize={30}>
           <AnimatePresence mode="wait">
             <motion.div
-              key={selectedFont}
+              key={`${selectedFont}-${selectedPattern}-${selectedColor}`}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               className="h-full p-6 prose prose-sm dark:prose-invert max-w-none overflow-y-auto"
               style={{ 
-                fontFamily: fontOptions.find(f => f.value === selectedFont)?.family 
+                fontFamily: fontOptions.find(f => f.value === selectedFont)?.family,
+                ...getBackgroundStyle()
               }}
             >
               <ReactMarkdown
