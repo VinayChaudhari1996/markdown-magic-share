@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { Button } from "@/components/ui/button";
@@ -9,6 +8,7 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 import html2pdf from "html2pdf.js";
+import Editor from "@monaco-editor/react";
 import {
   Select,
   SelectContent,
@@ -56,7 +56,7 @@ const fontOptions = [
   { value: "pt-sans", label: "PT Sans", family: "'PT Sans', sans-serif" },
 ];
 
-export default function Editor() {
+export default function MarkdownEditor() {
   const [markdown, setMarkdown] = useState("");
   const [selectedFont, setSelectedFont] = useState("default");
   const [selectedPattern, setSelectedPattern] = useState("none");
@@ -230,12 +230,25 @@ export default function Editor() {
       >
         <ResizablePanel defaultSize={50} minSize={30}>
           <Card className="h-full border-0 rounded-none bg-transparent">
-            <textarea
+            <Editor
+              height="100%"
+              defaultLanguage="markdown"
               value={markdown}
-              onChange={(e) => setMarkdown(e.target.value)}
-              placeholder="Enter your markdown here... (Try some math: $E = mc^2$ or \[ E^2 = (mc^2)^2 + (pc)^2 \])"
-              className="w-full h-full resize-none bg-transparent font-mono text-sm focus:outline-none p-6 placeholder:text-[#86868b]"
-              style={{ fontFamily: "'SF Mono', 'JetBrains Mono', monospace" }}
+              onChange={(value) => setMarkdown(value || '')}
+              theme="vs-light"
+              options={{
+                minimap: { enabled: false },
+                fontSize: 14,
+                lineNumbers: 'off',
+                folding: false,
+                lineDecorationsWidth: 0,
+                lineNumbersMinChars: 0,
+                renderLineHighlight: 'none',
+                scrollbar: {
+                  vertical: 'hidden',
+                  horizontal: 'hidden'
+                }
+              }}
             />
           </Card>
         </ResizablePanel>
