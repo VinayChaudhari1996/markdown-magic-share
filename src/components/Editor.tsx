@@ -67,6 +67,13 @@ export default function Editor() {
     });
   };
 
+  // Process the markdown content to convert \[ \] to $$ $$
+  const processMarkdown = (content: string) => {
+    return content
+      .replace(/\\[\s]*\[/g, '$$\n')
+      .replace(/\\[\s]*\]/g, '\n$$');
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -134,7 +141,7 @@ export default function Editor() {
             <textarea
               value={markdown}
               onChange={(e) => setMarkdown(e.target.value)}
-              placeholder="Enter your markdown here... (Try some math: $E = mc^2$)"
+              placeholder="Enter your markdown here... (Try some math: $E = mc^2$ or \[ E^2 = (mc^2)^2 + (pc)^2 \])"
               className="w-full h-full resize-none bg-transparent font-mono text-sm focus:outline-none p-6 placeholder:text-[#86868b]"
               style={{ fontFamily: "'SF Mono', 'JetBrains Mono', monospace" }}
             />
@@ -159,7 +166,7 @@ export default function Editor() {
                 remarkPlugins={[remarkMath]}
                 rehypePlugins={[rehypeKatex]}
               >
-                {markdown}
+                {processMarkdown(markdown)}
               </ReactMarkdown>
             </motion.div>
           </AnimatePresence>
