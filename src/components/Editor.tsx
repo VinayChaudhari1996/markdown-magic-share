@@ -70,8 +70,11 @@ export default function Editor() {
   // Process the markdown content to convert \[ \] to $$ $$
   const processMarkdown = (content: string) => {
     return content
-      .replace(/\\[\s]*\[/g, '$$\n')
-      .replace(/\\[\s]*\]/g, '\n$$');
+      .replace(/\\[\s]*\[([\s\S]*?)\\[\s]*\]/g, (_, math) => {
+        // Trim whitespace and ensure math is on its own line
+        const trimmedMath = math.trim();
+        return `$$\n${trimmedMath}\n$$`;
+      });
   };
 
   return (
