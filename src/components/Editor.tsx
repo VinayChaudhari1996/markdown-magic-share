@@ -234,8 +234,12 @@ export default function Editor() {
               value={markdown}
               onChange={(e) => setMarkdown(e.target.value)}
               placeholder="Enter your markdown here... (Try some math: $E = mc^2$ or \[ E^2 = (mc^2)^2 + (pc)^2 \])"
-              className="w-full h-full resize-none bg-transparent font-mono text-sm focus:outline-none p-6 placeholder:text-[#86868b]"
-              style={{ fontFamily: "'SF Mono', 'JetBrains Mono', monospace" }}
+              className="w-full h-full resize-none bg-transparent font-mono text-sm focus:outline-none p-6 placeholder:text-[#86868b] focus:ring-2 focus:ring-blue-500/10 rounded-lg transition-all"
+              style={{ 
+                fontFamily: "'SF Mono', 'JetBrains Mono', monospace",
+                lineHeight: '1.6',
+                letterSpacing: '0.3px'
+              }}
             />
           </Card>
         </ResizablePanel>
@@ -269,3 +273,4 @@ export default function Editor() {
     </motion.div>
   );
 }
+
