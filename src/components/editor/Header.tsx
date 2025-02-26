@@ -4,6 +4,7 @@ import { Share2, Download } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import html2pdf from "html2pdf.js";
 import { SettingsPanel } from "./SettingsPanel";
+import { motion } from "framer-motion"; // Add this import
 
 interface HeaderProps {
   markdown: string;
