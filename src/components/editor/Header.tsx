@@ -4,7 +4,7 @@ import { Share2, Download } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import html2pdf from "html2pdf.js";
 import { SettingsPanel } from "./SettingsPanel";
-import { motion } from "framer-motion"; // Add this import
+import { motion } from "framer-motion";
 
 interface HeaderProps {
   markdown: string;
@@ -28,12 +28,24 @@ export function Header({
   const { toast } = useToast();
 
   const handleShare = () => {
-    navigator.clipboard.writeText(markdown).then(() => {
-      toast({
-        title: "Content copied!",
-        description: "Your markdown content has been copied to clipboard.",
+    try {
+      // Encode the markdown content to base64 and add it to the URL hash
+      const encodedContent = btoa(encodeURIComponent(markdown));
+      const shareUrl = `${window.location.origin}${window.location.pathname}#${encodedContent}`;
+      
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        toast({
+          title: "Share link copied!",
+          description: "The URL with your markdown content has been copied to clipboard.",
+        });
       });
-    });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to generate share link. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleDownload = async () => {

@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "@/components/ui/card";
@@ -17,6 +17,19 @@ export default function Editor() {
   const [selectedFont, setSelectedFont] = useState("default");
   const [selectedPattern, setSelectedPattern] = useState("none");
   const [selectedColor, setSelectedColor] = useState("white");
+
+  // Load content from URL hash on initial render
+  useEffect(() => {
+    const hash = window.location.hash.slice(1); // Remove the # symbol
+    if (hash) {
+      try {
+        const decodedContent = decodeURIComponent(atob(hash));
+        setMarkdown(decodedContent);
+      } catch (error) {
+        console.error("Failed to decode URL hash:", error);
+      }
+    }
+  }, []);
 
   const getBackgroundStyle = () => {
     const pattern = backgroundPatterns.find(p => p.id === selectedPattern);
