@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { motion, AnimatePresence } from "framer-motion";
@@ -11,16 +10,18 @@ import { backgroundPatterns, backgroundColors } from "@/lib/patterns";
 import { fontOptions } from "@/lib/fonts";
 import { processMarkdown } from "@/utils/markdownProcessor";
 import { Header } from "./editor/Header";
+import { ZoomIn, ZoomOut } from "lucide-react";
+import { Button } from "./ui/button";
 
 export default function Editor() {
   const [markdown, setMarkdown] = useState("");
   const [selectedFont, setSelectedFont] = useState("default");
   const [selectedPattern, setSelectedPattern] = useState("none");
   const [selectedColor, setSelectedColor] = useState("white");
+  const [zoom, setZoom] = useState(1);
 
-  // Load content from URL hash on initial render
   useEffect(() => {
-    const hash = window.location.hash.slice(1); // Remove the # symbol
+    const hash = window.location.hash.slice(1);
     if (hash) {
       try {
         const decodedContent = decodeURIComponent(atob(hash));
@@ -38,7 +39,16 @@ export default function Editor() {
     return {
       backgroundColor: color?.color || '#ffffff',
       backgroundImage: pattern?.pattern || 'none',
+      backgroundSize: '20px 20px',
     };
+  };
+
+  const handleZoomIn = () => {
+    setZoom(prev => Math.min(prev + 0.1, 2));
+  };
+
+  const handleZoomOut = () => {
+    setZoom(prev => Math.max(prev - 0.1, 0.5));
   };
 
   return (
@@ -55,6 +65,7 @@ export default function Editor() {
         setSelectedPattern={setSelectedPattern}
         selectedColor={selectedColor}
         setSelectedColor={setSelectedColor}
+        zoom={zoom}
       />
 
       <ResizablePanelGroup
@@ -80,27 +91,50 @@ export default function Editor() {
         <ResizableHandle withHandle />
 
         <ResizablePanel defaultSize={50} minSize={30}>
-          <AnimatePresence mode="wait">
-            <motion.div
-              id="markdown-preview"
-              key={`${selectedFont}-${selectedPattern}-${selectedColor}`}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="h-full p-6 prose prose-sm dark:prose-invert max-w-none overflow-y-auto"
-              style={{ 
-                fontFamily: fontOptions.find(f => f.value === selectedFont)?.family,
-                ...getBackgroundStyle()
-              }}
-            >
-              <ReactMarkdown
-                remarkPlugins={[remarkMath]}
-                rehypePlugins={[rehypeKatex]}
+          <div className="relative h-full">
+            <div className="absolute right-4 top-4 flex flex-col gap-2 z-10">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={handleZoomIn}
+                className="rounded-full bg-white/80 backdrop-blur-xl border-0 shadow-sm hover:bg-white/90"
               >
-                {processMarkdown(markdown)}
-              </ReactMarkdown>
-            </motion.div>
-          </AnimatePresence>
+                <ZoomIn className="h-4 w-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={handleZoomOut}
+                className="rounded-full bg-white/80 backdrop-blur-xl border-0 shadow-sm hover:bg-white/90"
+              >
+                <ZoomOut className="h-4 w-4" />
+              </Button>
+            </div>
+            <AnimatePresence mode="wait">
+              <motion.div
+                id="markdown-preview"
+                key={`${selectedFont}-${selectedPattern}-${selectedColor}-${zoom}`}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="h-full p-6 prose prose-sm dark:prose-invert max-w-none overflow-y-auto"
+                style={{ 
+                  fontFamily: fontOptions.find(f => f.value === selectedFont)?.family,
+                  ...getBackgroundStyle(),
+                  transform: `scale(${zoom})`,
+                  transformOrigin: 'top left',
+                  transition: 'transform 0.2s ease-out'
+                }}
+              >
+                <ReactMarkdown
+                  remarkPlugins={[remarkMath]}
+                  rehypePlugins={[rehypeKatex]}
+                >
+                  {processMarkdown(markdown)}
+                </ReactMarkdown>
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </ResizablePanel>
       </ResizablePanelGroup>
     </motion.div>

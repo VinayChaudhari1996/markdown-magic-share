@@ -14,6 +14,7 @@ interface HeaderProps {
   setSelectedPattern: (pattern: string) => void;
   selectedColor: string;
   setSelectedColor: (color: string) => void;
+  zoom: number;
 }
 
 export function Header({
@@ -24,6 +25,7 @@ export function Header({
   setSelectedPattern,
   selectedColor,
   setSelectedColor,
+  zoom,
 }: HeaderProps) {
   const { toast } = useToast();
 
@@ -56,7 +58,11 @@ export function Header({
       margin: 10,
       filename: 'markdown-content.pdf',
       image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
+      html2canvas: { 
+        scale: 2,
+        windowWidth: element.scrollWidth * zoom,
+        windowHeight: element.scrollHeight * zoom
+      },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
@@ -98,7 +104,7 @@ export function Header({
           variant="outline" 
           className="rounded-full bg-white/80 backdrop-blur-xl border-0 shadow-sm hover:bg-white/90"
         >
-          <Download className="h-4 w-4" />
+          <Download className="h-4 w-4 mr-2" />
           Download PDF
         </Button>
         <Button 

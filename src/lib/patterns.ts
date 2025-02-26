@@ -1,9 +1,9 @@
-
 export const backgroundPatterns = [
-  { id: 'none', label: 'None', pattern: '' },
-  { id: 'dots', label: 'Dots', pattern: 'radial-gradient(#e5e7eb 1px, transparent 1px) 0 0/20px 20px' },
-  { id: 'grid', label: 'Grid', pattern: 'linear-gradient(to right, #e5e7eb 1px, transparent 1px) 0 0/20px 20px, linear-gradient(#e5e7eb 1px, transparent 1px) 0 0/20px 20px' },
-  { id: 'diagonal', label: 'Diagonal', pattern: 'repeating-linear-gradient(45deg, #e5e7eb 0, #e5e7eb 1px, transparent 0, transparent 50%) 0 0/20px 20px' },
+  { id: 'none', label: 'None', pattern: 'none' },
+  { id: 'dots', label: 'Dots', pattern: `radial-gradient(black 1px, transparent 1px)` },
+  { id: 'grid', label: 'Grid', pattern: `linear-gradient(to right, rgba(0,0,0,0.1) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0,0,0,0.1) 1px, transparent 1px)` },
+  { id: 'diagonal', label: 'Diagonal', pattern: `repeating-linear-gradient(45deg, rgba(0,0,0,0.1) 0, rgba(0,0,0,0.1) 1px, transparent 0, transparent 50%)` },
 ];
 
 export const backgroundColors = [
