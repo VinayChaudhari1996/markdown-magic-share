@@ -56,8 +56,10 @@ export function Header({
     const element = document.getElementById('markdown-preview');
     if (!element) return;
 
-    // Create a clone of the element to apply styles without affecting the UI
+    // Create a completely new element for PDF rendering
     const cloneElement = document.createElement('div');
+    
+    // Copy the HTML content from the original element
     cloneElement.innerHTML = element.innerHTML;
     
     // Get background and font styles
@@ -65,20 +67,32 @@ export function Header({
     const color = backgroundColors.find(c => c.id === selectedColor);
     const fontFamily = fontOptions.find(f => f.value === selectedFont)?.family;
     
-    // Apply all styles to the clone
+    // Apply all necessary styles to ensure content visibility
     cloneElement.style.fontFamily = fontFamily || "'system-ui', sans-serif";
     cloneElement.style.fontSize = `${zoom}rem`;
     cloneElement.style.lineHeight = '1.6';
     cloneElement.style.padding = '2rem';
     cloneElement.style.backgroundColor = color?.color || '#ffffff';
-    cloneElement.style.backgroundImage = pattern?.pattern || 'none';
-    cloneElement.style.backgroundSize = '20px 20px';
+    cloneElement.style.color = "#000000"; // Ensure text is black for visibility
     
-    // Temporarily append to body (hidden) to capture the content
+    // Apply background pattern if selected
+    if (pattern && pattern.id !== 'none') {
+      cloneElement.style.backgroundImage = pattern.pattern;
+      cloneElement.style.backgroundSize = '20px 20px';
+    }
+    
+    // Make sure all content inside has proper color
+    const allTextElements = cloneElement.querySelectorAll('p, h1, h2, h3, h4, h5, h6, li, a, span, div, strong, em, code, pre');
+    allTextElements.forEach(el => {
+      if (el instanceof HTMLElement) {
+        el.style.color = "#000000";
+      }
+    });
+    
+    // Ensure proper sizing for PDF generation
     cloneElement.style.position = 'absolute';
     cloneElement.style.left = '-9999px';
-    cloneElement.style.width = 'fit-content';
-    cloneElement.style.minWidth = '800px';
+    cloneElement.style.width = '800px'; // Fixed width for consistency
     document.body.appendChild(cloneElement);
 
     const opt = {
@@ -88,13 +102,15 @@ export function Header({
       html2canvas: { 
         scale: 2,
         letterRendering: true,
+        useCORS: true,
       },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
     try {
       await html2pdf().set(opt).from(cloneElement).save();
-      // Cleanup: remove the clone after PDF generation
+      
+      // Cleanup after PDF generation
       document.body.removeChild(cloneElement);
       
       toast({
@@ -106,6 +122,8 @@ export function Header({
       if (document.body.contains(cloneElement)) {
         document.body.removeChild(cloneElement);
       }
+      
+      console.error("PDF generation error:", error);
       
       toast({
         title: "Error",

@@ -126,7 +126,8 @@ export default function Editor() {
                     fontSize: `${zoom}rem`,
                     lineHeight: '1.6',
                     width: "fit-content",
-                    minWidth: "100%"
+                    minWidth: "100%",
+                    color: "#000000", // Ensure text is visible
                   }}
                 >
                   <ReactMarkdown
