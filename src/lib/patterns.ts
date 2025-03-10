@@ -1,3 +1,4 @@
+
 export const backgroundPatterns = [
   { id: 'none', label: 'None', pattern: 'none' },
   { id: 'dots', label: 'Dots', pattern: `radial-gradient(black 1px, transparent 1px)` },

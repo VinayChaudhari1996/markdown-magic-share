@@ -54,25 +54,46 @@ export function Header({
     const element = document.getElementById('markdown-preview');
     if (!element) return;
 
+    // Create a clone of the element to apply zoom without affecting the UI
+    const cloneElement = element.cloneNode(true) as HTMLElement;
+    
+    // Apply the same zoom transformation style to the clone
+    cloneElement.style.transform = `scale(${zoom})`;
+    cloneElement.style.transformOrigin = 'top left';
+    
+    // Temporarily append to body (hidden) to capture the zoomed content
+    cloneElement.style.position = 'absolute';
+    cloneElement.style.left = '-9999px';
+    document.body.appendChild(cloneElement);
+
     const opt = {
       margin: 10,
       filename: 'markdown-content.pdf',
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { 
         scale: 2,
-        windowWidth: element.scrollWidth * zoom,
-        windowHeight: element.scrollHeight * zoom
+        // Use the natural dimensions of the element with zoom applied
+        windowWidth: element.scrollWidth,
+        windowHeight: element.scrollHeight
       },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
     try {
-      await html2pdf().set(opt).from(element).save();
+      await html2pdf().set(opt).from(cloneElement).save();
+      // Cleanup: remove the clone after PDF generation
+      document.body.removeChild(cloneElement);
+      
       toast({
         title: "PDF Generated!",
         description: "Your markdown content has been downloaded as PDF.",
       });
     } catch (error) {
+      // Cleanup in case of error
+      if (document.body.contains(cloneElement)) {
+        document.body.removeChild(cloneElement);
+      }
+      
       toast({
         title: "Error",
         description: "Failed to generate PDF. Please try again.",
