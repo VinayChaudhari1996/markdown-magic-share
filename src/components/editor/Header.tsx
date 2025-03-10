@@ -53,48 +53,75 @@ export function Header({
   };
 
   const handleDownload = async () => {
+    // Get the original element
     const element = document.getElementById('markdown-preview');
-    if (!element) return;
+    if (!element) {
+      toast({
+        title: "Error",
+        description: "Could not find content to export.",
+        variant: "destructive",
+      });
+      return;
+    }
 
-    // Create a completely new element for PDF rendering
-    const cloneElement = document.createElement('div');
+    // Create a wrapper div
+    const wrapper = document.createElement('div');
+    wrapper.style.width = '800px';  // fixed width for PDF
+    wrapper.style.padding = '40px';
+    wrapper.style.visibility = 'hidden';
+    wrapper.style.position = 'absolute';
+    wrapper.style.left = '-9999px';
+    wrapper.style.top = '0';
     
-    // Copy the HTML content from the original element
-    cloneElement.innerHTML = element.innerHTML;
-    
-    // Get background and font styles
+    // Get styling details
     const pattern = backgroundPatterns.find(p => p.id === selectedPattern);
     const color = backgroundColors.find(c => c.id === selectedColor);
     const fontFamily = fontOptions.find(f => f.value === selectedFont)?.family;
     
-    // Apply all necessary styles to ensure content visibility
-    cloneElement.style.fontFamily = fontFamily || "'system-ui', sans-serif";
-    cloneElement.style.fontSize = `${zoom}rem`;
-    cloneElement.style.lineHeight = '1.6';
-    cloneElement.style.padding = '2rem';
-    cloneElement.style.backgroundColor = color?.color || '#ffffff';
-    cloneElement.style.color = "#000000"; // Ensure text is black for visibility
-    
-    // Apply background pattern if selected
+    // Set wrapper styles
+    wrapper.style.backgroundColor = color?.color || '#ffffff';
     if (pattern && pattern.id !== 'none') {
-      cloneElement.style.backgroundImage = pattern.pattern;
-      cloneElement.style.backgroundSize = '20px 20px';
+      wrapper.style.backgroundImage = pattern.pattern;
+      wrapper.style.backgroundSize = '20px 20px';
     }
     
-    // Make sure all content inside has proper color
-    const allTextElements = cloneElement.querySelectorAll('p, h1, h2, h3, h4, h5, h6, li, a, span, div, strong, em, code, pre');
-    allTextElements.forEach(el => {
+    // Create content div with proper styles
+    const content = document.createElement('div');
+    content.innerHTML = element.innerHTML;
+    content.style.fontFamily = fontFamily || "'system-ui', sans-serif";
+    content.style.fontSize = `${zoom}rem`;
+    content.style.lineHeight = '1.6';
+    content.style.color = '#000000';
+    
+    // Add content to wrapper
+    wrapper.appendChild(content);
+    
+    // Force all text elements to have proper color and visibility
+    const allElements = content.querySelectorAll('*');
+    allElements.forEach(el => {
       if (el instanceof HTMLElement) {
-        el.style.color = "#000000";
+        // Preserve code block styling but ensure text is visible
+        if (el.tagName === 'CODE' || el.tagName === 'PRE') {
+          el.style.color = '#000000';
+          el.style.backgroundColor = 'rgba(0,0,0,0.05)';
+          el.style.padding = el.tagName === 'PRE' ? '1em' : '0.2em 0.4em';
+          el.style.borderRadius = '3px';
+          el.style.fontFamily = "'SF Mono', monospace";
+        } else {
+          el.style.color = '#000000';
+        }
+        
+        // Fix any potential issues with visibility
+        el.style.opacity = '1';
+        el.style.visibility = 'visible';
+        el.style.display = el.style.display === 'none' ? 'block' : el.style.display;
       }
     });
     
-    // Ensure proper sizing for PDF generation
-    cloneElement.style.position = 'absolute';
-    cloneElement.style.left = '-9999px';
-    cloneElement.style.width = '800px'; // Fixed width for consistency
-    document.body.appendChild(cloneElement);
+    // Add to body for html2pdf to work with it
+    document.body.appendChild(wrapper);
 
+    // Configure PDF options
     const opt = {
       margin: 10,
       filename: 'markdown-content.pdf',
@@ -103,24 +130,26 @@ export function Header({
         scale: 2,
         letterRendering: true,
         useCORS: true,
+        logging: true,  // Enable logging for debugging
       },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
     try {
-      await html2pdf().set(opt).from(cloneElement).save();
+      // Generate and save PDF
+      await html2pdf().set(opt).from(wrapper).save();
       
-      // Cleanup after PDF generation
-      document.body.removeChild(cloneElement);
+      // Clean up
+      document.body.removeChild(wrapper);
       
       toast({
         title: "PDF Generated!",
         description: "Your markdown content has been downloaded as PDF.",
       });
     } catch (error) {
-      // Cleanup in case of error
-      if (document.body.contains(cloneElement)) {
-        document.body.removeChild(cloneElement);
+      // Clean up in case of error
+      if (document.body.contains(wrapper)) {
+        document.body.removeChild(wrapper);
       }
       
       console.error("PDF generation error:", error);
