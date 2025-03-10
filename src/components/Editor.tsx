@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { motion, AnimatePresence } from "framer-motion";
@@ -110,30 +111,33 @@ export default function Editor() {
                 <ZoomOut className="h-4 w-4" />
               </Button>
             </div>
-            <AnimatePresence mode="wait">
-              <motion.div
-                id="markdown-preview"
-                key={`${selectedFont}-${selectedPattern}-${selectedColor}-${zoom}`}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="h-full p-6 prose prose-sm dark:prose-invert max-w-none overflow-y-auto"
-                style={{ 
-                  fontFamily: fontOptions.find(f => f.value === selectedFont)?.family,
-                  ...getBackgroundStyle(),
-                  transform: `scale(${zoom})`,
-                  transformOrigin: 'top left',
-                  transition: 'transform 0.2s ease-out'
-                }}
-              >
-                <ReactMarkdown
-                  remarkPlugins={[remarkMath]}
-                  rehypePlugins={[rehypeKatex]}
+            <div className="h-full overflow-auto">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  id="markdown-preview"
+                  key={`${selectedFont}-${selectedPattern}-${selectedColor}-${zoom}`}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="p-6 prose prose-sm dark:prose-invert max-w-none"
+                  style={{ 
+                    fontFamily: fontOptions.find(f => f.value === selectedFont)?.family,
+                    ...getBackgroundStyle(),
+                    fontSize: `${zoom}rem`,
+                    lineHeight: '1.6',
+                    width: "fit-content",
+                    minWidth: "100%"
+                  }}
                 >
-                  {processMarkdown(markdown)}
-                </ReactMarkdown>
-              </motion.div>
-            </AnimatePresence>
+                  <ReactMarkdown
+                    remarkPlugins={[remarkMath]}
+                    rehypePlugins={[rehypeKatex]}
+                  >
+                    {processMarkdown(markdown)}
+                  </ReactMarkdown>
+                </motion.div>
+              </AnimatePresence>
+            </div>
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>

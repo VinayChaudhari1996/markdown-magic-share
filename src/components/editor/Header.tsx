@@ -5,6 +5,8 @@ import { useToast } from "@/components/ui/use-toast";
 import html2pdf from "html2pdf.js";
 import { SettingsPanel } from "./SettingsPanel";
 import { motion } from "framer-motion";
+import { fontOptions } from "@/lib/fonts";
+import { backgroundPatterns, backgroundColors } from "@/lib/patterns";
 
 interface HeaderProps {
   markdown: string;
@@ -54,16 +56,29 @@ export function Header({
     const element = document.getElementById('markdown-preview');
     if (!element) return;
 
-    // Create a clone of the element to apply zoom without affecting the UI
-    const cloneElement = element.cloneNode(true) as HTMLElement;
+    // Create a clone of the element to apply styles without affecting the UI
+    const cloneElement = document.createElement('div');
+    cloneElement.innerHTML = element.innerHTML;
     
-    // Apply the same zoom transformation style to the clone
-    cloneElement.style.transform = `scale(${zoom})`;
-    cloneElement.style.transformOrigin = 'top left';
+    // Get background and font styles
+    const pattern = backgroundPatterns.find(p => p.id === selectedPattern);
+    const color = backgroundColors.find(c => c.id === selectedColor);
+    const fontFamily = fontOptions.find(f => f.value === selectedFont)?.family;
     
-    // Temporarily append to body (hidden) to capture the zoomed content
+    // Apply all styles to the clone
+    cloneElement.style.fontFamily = fontFamily || "'system-ui', sans-serif";
+    cloneElement.style.fontSize = `${zoom}rem`;
+    cloneElement.style.lineHeight = '1.6';
+    cloneElement.style.padding = '2rem';
+    cloneElement.style.backgroundColor = color?.color || '#ffffff';
+    cloneElement.style.backgroundImage = pattern?.pattern || 'none';
+    cloneElement.style.backgroundSize = '20px 20px';
+    
+    // Temporarily append to body (hidden) to capture the content
     cloneElement.style.position = 'absolute';
     cloneElement.style.left = '-9999px';
+    cloneElement.style.width = 'fit-content';
+    cloneElement.style.minWidth = '800px';
     document.body.appendChild(cloneElement);
 
     const opt = {
@@ -72,9 +87,7 @@ export function Header({
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { 
         scale: 2,
-        // Use the natural dimensions of the element with zoom applied
-        windowWidth: element.scrollWidth,
-        windowHeight: element.scrollHeight
+        letterRendering: true,
       },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
