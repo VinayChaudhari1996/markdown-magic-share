@@ -39,7 +39,7 @@ export default function Editor() {
     
     return {
       backgroundColor: color?.color || '#ffffff',
-      backgroundImage: pattern?.pattern || 'none',
+      backgroundImage: pattern?.pattern !== 'none' ? pattern?.pattern : 'none',
       backgroundSize: '20px 20px',
     };
   };
@@ -133,6 +133,18 @@ export default function Editor() {
                   <ReactMarkdown
                     remarkPlugins={[remarkMath]}
                     rehypePlugins={[rehypeKatex]}
+                    components={{
+                      // Force color on all elements for better PDF output
+                      p: ({node, ...props}) => <p style={{color: '#000000'}} {...props} />,
+                      h1: ({node, ...props}) => <h1 style={{color: '#000000'}} {...props} />,
+                      h2: ({node, ...props}) => <h2 style={{color: '#000000'}} {...props} />,
+                      h3: ({node, ...props}) => <h3 style={{color: '#000000'}} {...props} />,
+                      h4: ({node, ...props}) => <h4 style={{color: '#000000'}} {...props} />,
+                      li: ({node, ...props}) => <li style={{color: '#000000'}} {...props} />,
+                      a: ({node, ...props}) => <a style={{color: '#0366d6'}} {...props} />,
+                      code: ({node, ...props}) => <code style={{backgroundColor: '#f6f6f6', color: '#000000', padding: '0.2em 0.4em', borderRadius: '3px'}} {...props} />,
+                      pre: ({node, ...props}) => <pre style={{backgroundColor: '#f6f6f6', color: '#000000', padding: '1em', borderRadius: '3px'}} {...props} />,
+                    }}
                   >
                     {processMarkdown(markdown)}
                   </ReactMarkdown>

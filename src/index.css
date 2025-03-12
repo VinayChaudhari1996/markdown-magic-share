@@ -49,4 +49,19 @@
   .scrollbar-hidden::-webkit-scrollbar {
     display: none;
   }
+  
+  /* Add utility for PDF export to ensure text visibility */
+  .pdf-export * {
+    color: #000000 !important;
+    background-color: #ffffff;
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+  
+  .pdf-export pre,
+  .pdf-export code {
+    background-color: #f6f6f6 !important;
+    border: 1px solid #e4e4e4 !important;
+    color: #000000 !important;
+  }
 }

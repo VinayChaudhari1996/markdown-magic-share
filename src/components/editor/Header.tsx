@@ -64,61 +64,58 @@ export function Header({
       return;
     }
 
-    // Create a wrapper div
+    // Create a wrapper div with white background
     const wrapper = document.createElement('div');
     wrapper.style.width = '800px';  // fixed width for PDF
     wrapper.style.padding = '40px';
+    wrapper.style.backgroundColor = '#ffffff';
     wrapper.style.visibility = 'hidden';
     wrapper.style.position = 'absolute';
     wrapper.style.left = '-9999px';
     wrapper.style.top = '0';
     
-    // Get styling details
+    // Get styling details but ensure visibility
     const pattern = backgroundPatterns.find(p => p.id === selectedPattern);
     const color = backgroundColors.find(c => c.id === selectedColor);
     const fontFamily = fontOptions.find(f => f.value === selectedFont)?.family;
     
-    // Set wrapper styles
-    wrapper.style.backgroundColor = color?.color || '#ffffff';
-    if (pattern && pattern.id !== 'none') {
-      wrapper.style.backgroundImage = pattern.pattern;
-      wrapper.style.backgroundSize = '20px 20px';
-    }
+    // Clone the content instead of creating a new div
+    const content = element.cloneNode(true) as HTMLElement;
     
-    // Create content div with proper styles
-    const content = document.createElement('div');
-    content.innerHTML = element.innerHTML;
+    // Set essential styles to ensure visibility
     content.style.fontFamily = fontFamily || "'system-ui', sans-serif";
     content.style.fontSize = `${zoom}rem`;
     content.style.lineHeight = '1.6';
-    content.style.color = '#000000';
     
-    // Add content to wrapper
-    wrapper.appendChild(content);
-    
-    // Force all text elements to have proper color and visibility
+    // Most importantly, force text color to be black
     const allElements = content.querySelectorAll('*');
     allElements.forEach(el => {
       if (el instanceof HTMLElement) {
-        // Preserve code block styling but ensure text is visible
+        // Make all text black for maximum visibility
+        el.style.color = '#000000';
+        
+        // Special handling for code blocks
         if (el.tagName === 'CODE' || el.tagName === 'PRE') {
-          el.style.color = '#000000';
-          el.style.backgroundColor = 'rgba(0,0,0,0.05)';
+          el.style.backgroundColor = '#f6f6f6';
           el.style.padding = el.tagName === 'PRE' ? '1em' : '0.2em 0.4em';
           el.style.borderRadius = '3px';
           el.style.fontFamily = "'SF Mono', monospace";
-        } else {
           el.style.color = '#000000';
         }
         
-        // Fix any potential issues with visibility
+        // Ensure images and other elements are visible
         el.style.opacity = '1';
         el.style.visibility = 'visible';
         el.style.display = el.style.display === 'none' ? 'block' : el.style.display;
       }
     });
     
-    // Add to body for html2pdf to work with it
+    // Reset background to white for better readability
+    content.style.backgroundColor = '#ffffff';
+    content.style.backgroundImage = 'none';
+    
+    // Append the cloned content to wrapper
+    wrapper.appendChild(content);
     document.body.appendChild(wrapper);
 
     // Configure PDF options
@@ -130,9 +127,15 @@ export function Header({
         scale: 2,
         letterRendering: true,
         useCORS: true,
-        logging: true,  // Enable logging for debugging
+        backgroundColor: '#ffffff',
       },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      jsPDF: { 
+        unit: 'mm', 
+        format: 'a4', 
+        orientation: 'portrait',
+        putOnlyUsedFonts: true,
+        floatPrecision: 16
+      }
     };
 
     try {
