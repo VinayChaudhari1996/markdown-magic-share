@@ -20,14 +20,24 @@ export default function Editor() {
   const [selectedPattern, setSelectedPattern] = useState("none");
   const [selectedColor, setSelectedColor] = useState("white");
   const [zoom, setZoom] = useState(1);
-  const [isEditorVisible, setIsEditorVisible] = useState(true);
+  const [isEditorVisible, setIsEditorVisible] = useState(false);
 
   useEffect(() => {
     const hash = window.location.hash.slice(1);
     if (hash) {
       try {
         const decodedContent = decodeURIComponent(atob(hash));
-        setMarkdown(decodedContent);
+        try {
+          // Try to parse as JSON with settings
+          const parsedContent = JSON.parse(decodedContent);
+          setMarkdown(parsedContent.markdown || "");
+          setSelectedFont(parsedContent.font || "default");
+          setSelectedPattern(parsedContent.pattern || "none");
+          setSelectedColor(parsedContent.color || "white");
+        } catch (jsonError) {
+          // Fallback to old format (just markdown)
+          setMarkdown(decodedContent);
+        }
       } catch (error) {
         console.error("Failed to decode URL hash:", error);
       }

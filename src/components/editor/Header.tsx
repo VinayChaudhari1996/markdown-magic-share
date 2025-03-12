@@ -4,7 +4,6 @@ import { Share2, Download } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import html2pdf from "html2pdf.js";
 import { SettingsPanel } from "./SettingsPanel";
-import { motion } from "framer-motion";
 
 interface HeaderProps {
   markdown: string;
@@ -31,14 +30,21 @@ export function Header({
 
   const handleShare = () => {
     try {
-      // Encode the markdown content to base64 and add it to the URL hash
-      const encodedContent = btoa(encodeURIComponent(markdown));
+      // Include all settings in the share URL
+      const contentToEncode = JSON.stringify({
+        markdown,
+        font: selectedFont,
+        pattern: selectedPattern,
+        color: selectedColor,
+      });
+      
+      const encodedContent = btoa(encodeURIComponent(contentToEncode));
       const shareUrl = `${window.location.origin}${window.location.pathname}#${encodedContent}`;
       
       navigator.clipboard.writeText(shareUrl).then(() => {
         toast({
           title: "Share link copied!",
-          description: "The URL with your markdown content has been copied to clipboard.",
+          description: "The URL with your content and settings has been copied to clipboard.",
         });
       });
     } catch (error) {
@@ -92,17 +98,12 @@ export function Header({
   };
 
   return (
-    <header className="flex flex-col md:flex-row items-center justify-between max-w-[1200px] mx-auto w-full gap-4">
-      <motion.div 
-        initial={{ opacity: 0, y: -10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="floating"
-      >
+    <header className="flex flex-col md:flex-row items-center justify-between max-w-[1200px] mx-auto w-full gap-4 py-4 px-2">
+      <div className="flex items-center">
         <h1 className="text-2xl font-semibold bg-gradient-to-r from-gray-800 to-gray-500 bg-clip-text text-transparent">
           Markdown Magic Share
         </h1>
-      </motion.div>
+      </div>
       <div className="flex items-center gap-3">
         <SettingsPanel
           selectedFont={selectedFont}
