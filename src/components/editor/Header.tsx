@@ -5,8 +5,6 @@ import { useToast } from "@/components/ui/use-toast";
 import html2pdf from "html2pdf.js";
 import { SettingsPanel } from "./SettingsPanel";
 import { motion } from "framer-motion";
-import { fontOptions } from "@/lib/fonts";
-import { backgroundPatterns, backgroundColors } from "@/lib/patterns";
 
 interface HeaderProps {
   markdown: string;
@@ -53,110 +51,28 @@ export function Header({
   };
 
   const handleDownload = async () => {
-    // Get the original element
     const element = document.getElementById('markdown-preview');
-    if (!element) {
-      toast({
-        title: "Error",
-        description: "Could not find content to export.",
-        variant: "destructive",
-      });
-      return;
-    }
+    if (!element) return;
 
-    // Create a wrapper div with white background
-    const wrapper = document.createElement('div');
-    wrapper.style.width = '800px';  // fixed width for PDF
-    wrapper.style.padding = '40px';
-    wrapper.style.backgroundColor = '#ffffff';
-    wrapper.style.visibility = 'hidden';
-    wrapper.style.position = 'absolute';
-    wrapper.style.left = '-9999px';
-    wrapper.style.top = '0';
-    
-    // Get styling details but ensure visibility
-    const pattern = backgroundPatterns.find(p => p.id === selectedPattern);
-    const color = backgroundColors.find(c => c.id === selectedColor);
-    const fontFamily = fontOptions.find(f => f.value === selectedFont)?.family;
-    
-    // Clone the content instead of creating a new div
-    const content = element.cloneNode(true) as HTMLElement;
-    
-    // Set essential styles to ensure visibility
-    content.style.fontFamily = fontFamily || "'system-ui', sans-serif";
-    content.style.fontSize = `${zoom}rem`;
-    content.style.lineHeight = '1.6';
-    
-    // Most importantly, force text color to be black
-    const allElements = content.querySelectorAll('*');
-    allElements.forEach(el => {
-      if (el instanceof HTMLElement) {
-        // Make all text black for maximum visibility
-        el.style.color = '#000000';
-        
-        // Special handling for code blocks
-        if (el.tagName === 'CODE' || el.tagName === 'PRE') {
-          el.style.backgroundColor = '#f6f6f6';
-          el.style.padding = el.tagName === 'PRE' ? '1em' : '0.2em 0.4em';
-          el.style.borderRadius = '3px';
-          el.style.fontFamily = "'SF Mono', monospace";
-          el.style.color = '#000000';
-        }
-        
-        // Ensure images and other elements are visible
-        el.style.opacity = '1';
-        el.style.visibility = 'visible';
-        el.style.display = el.style.display === 'none' ? 'block' : el.style.display;
-      }
-    });
-    
-    // Reset background to white for better readability
-    content.style.backgroundColor = '#ffffff';
-    content.style.backgroundImage = 'none';
-    
-    // Append the cloned content to wrapper
-    wrapper.appendChild(content);
-    document.body.appendChild(wrapper);
-
-    // Configure PDF options
     const opt = {
       margin: 10,
       filename: 'markdown-content.pdf',
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { 
         scale: 2,
-        letterRendering: true,
-        useCORS: true,
-        backgroundColor: '#ffffff',
+        windowWidth: element.scrollWidth * zoom,
+        windowHeight: element.scrollHeight * zoom
       },
-      jsPDF: { 
-        unit: 'mm', 
-        format: 'a4', 
-        orientation: 'portrait',
-        putOnlyUsedFonts: true,
-        floatPrecision: 16
-      }
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
     try {
-      // Generate and save PDF
-      await html2pdf().set(opt).from(wrapper).save();
-      
-      // Clean up
-      document.body.removeChild(wrapper);
-      
+      await html2pdf().set(opt).from(element).save();
       toast({
         title: "PDF Generated!",
         description: "Your markdown content has been downloaded as PDF.",
       });
     } catch (error) {
-      // Clean up in case of error
-      if (document.body.contains(wrapper)) {
-        document.body.removeChild(wrapper);
-      }
-      
-      console.error("PDF generation error:", error);
-      
       toast({
         title: "Error",
         description: "Failed to generate PDF. Please try again.",

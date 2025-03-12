@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { motion, AnimatePresence } from "framer-motion";
@@ -39,7 +38,7 @@ export default function Editor() {
     
     return {
       backgroundColor: color?.color || '#ffffff',
-      backgroundImage: pattern?.pattern !== 'none' ? pattern?.pattern : 'none',
+      backgroundImage: pattern?.pattern || 'none',
       backgroundSize: '20px 20px',
     };
   };
@@ -111,46 +110,30 @@ export default function Editor() {
                 <ZoomOut className="h-4 w-4" />
               </Button>
             </div>
-            <div className="h-full overflow-auto">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  id="markdown-preview"
-                  key={`${selectedFont}-${selectedPattern}-${selectedColor}-${zoom}`}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="p-6 prose prose-sm dark:prose-invert max-w-none"
-                  style={{ 
-                    fontFamily: fontOptions.find(f => f.value === selectedFont)?.family,
-                    ...getBackgroundStyle(),
-                    fontSize: `${zoom}rem`,
-                    lineHeight: '1.6',
-                    width: "fit-content",
-                    minWidth: "100%",
-                    color: "#000000", // Ensure text is visible
-                  }}
+            <AnimatePresence mode="wait">
+              <motion.div
+                id="markdown-preview"
+                key={`${selectedFont}-${selectedPattern}-${selectedColor}-${zoom}`}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="h-full p-6 prose prose-sm dark:prose-invert max-w-none overflow-y-auto"
+                style={{ 
+                  fontFamily: fontOptions.find(f => f.value === selectedFont)?.family,
+                  ...getBackgroundStyle(),
+                  transform: `scale(${zoom})`,
+                  transformOrigin: 'top left',
+                  transition: 'transform 0.2s ease-out'
+                }}
+              >
+                <ReactMarkdown
+                  remarkPlugins={[remarkMath]}
+                  rehypePlugins={[rehypeKatex]}
                 >
-                  <ReactMarkdown
-                    remarkPlugins={[remarkMath]}
-                    rehypePlugins={[rehypeKatex]}
-                    components={{
-                      // Force color on all elements for better PDF output
-                      p: ({node, ...props}) => <p style={{color: '#000000'}} {...props} />,
-                      h1: ({node, ...props}) => <h1 style={{color: '#000000'}} {...props} />,
-                      h2: ({node, ...props}) => <h2 style={{color: '#000000'}} {...props} />,
-                      h3: ({node, ...props}) => <h3 style={{color: '#000000'}} {...props} />,
-                      h4: ({node, ...props}) => <h4 style={{color: '#000000'}} {...props} />,
-                      li: ({node, ...props}) => <li style={{color: '#000000'}} {...props} />,
-                      a: ({node, ...props}) => <a style={{color: '#0366d6'}} {...props} />,
-                      code: ({node, ...props}) => <code style={{backgroundColor: '#f6f6f6', color: '#000000', padding: '0.2em 0.4em', borderRadius: '3px'}} {...props} />,
-                      pre: ({node, ...props}) => <pre style={{backgroundColor: '#f6f6f6', color: '#000000', padding: '1em', borderRadius: '3px'}} {...props} />,
-                    }}
-                  >
-                    {processMarkdown(markdown)}
-                  </ReactMarkdown>
-                </motion.div>
-              </AnimatePresence>
-            </div>
+                  {processMarkdown(markdown)}
+                </ReactMarkdown>
+              </motion.div>
+            </AnimatePresence>
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>
