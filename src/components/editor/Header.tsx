@@ -1,13 +1,12 @@
 
 import { Button } from "@/components/ui/button";
-import { Share2, Download, Moon, Sun } from "lucide-react";
+import { Share2, Download } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import html2pdf from "html2pdf.js";
 import { SettingsPanel } from "./SettingsPanel";
 import { motion } from "framer-motion";
 import { fontOptions } from "@/lib/fonts";
 import { backgroundPatterns, backgroundColors } from "@/lib/patterns";
-import { cn } from "@/lib/utils";
 
 interface HeaderProps {
   markdown: string;
@@ -18,8 +17,6 @@ interface HeaderProps {
   selectedColor: string;
   setSelectedColor: (color: string) => void;
   zoom: number;
-  isDarkMode: boolean;
-  setIsDarkMode: (isDark: boolean) => void;
 }
 
 export function Header({
@@ -31,8 +28,6 @@ export function Header({
   selectedColor,
   setSelectedColor,
   zoom,
-  isDarkMode,
-  setIsDarkMode,
 }: HeaderProps) {
   const { toast } = useToast();
 
@@ -69,7 +64,7 @@ export function Header({
       return;
     }
 
-    // Create a wrapper div with fixed dimensions for the PDF
+    // Create a wrapper div
     const wrapper = document.createElement('div');
     wrapper.style.width = '800px';  // fixed width for PDF
     wrapper.style.padding = '40px';
@@ -90,15 +85,13 @@ export function Header({
       wrapper.style.backgroundSize = '20px 20px';
     }
     
-    // Create a deep clone of the markdown content
+    // Create content div with proper styles
     const content = document.createElement('div');
     content.innerHTML = element.innerHTML;
-    
-    // Apply global styles
     content.style.fontFamily = fontFamily || "'system-ui', sans-serif";
     content.style.fontSize = `${zoom}rem`;
     content.style.lineHeight = '1.6';
-    content.style.color = isDarkMode ? '#E5E7EB' : '#1F2937';
+    content.style.color = '#000000';
     
     // Add content to wrapper
     wrapper.appendChild(content);
@@ -107,15 +100,15 @@ export function Header({
     const allElements = content.querySelectorAll('*');
     allElements.forEach(el => {
       if (el instanceof HTMLElement) {
-        // Always ensure text is visible in PDF export
-        el.style.color = isDarkMode ? '#E5E7EB' : '#1F2937';
-        
         // Preserve code block styling but ensure text is visible
         if (el.tagName === 'CODE' || el.tagName === 'PRE') {
-          el.style.backgroundColor = isDarkMode ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)';
+          el.style.color = '#000000';
+          el.style.backgroundColor = 'rgba(0,0,0,0.05)';
           el.style.padding = el.tagName === 'PRE' ? '1em' : '0.2em 0.4em';
           el.style.borderRadius = '3px';
           el.style.fontFamily = "'SF Mono', monospace";
+        } else {
+          el.style.color = '#000000';
         }
         
         // Fix any potential issues with visibility
@@ -137,7 +130,7 @@ export function Header({
         scale: 2,
         letterRendering: true,
         useCORS: true,
-        logging: true,
+        logging: true,  // Enable logging for debugging
       },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
@@ -170,18 +163,15 @@ export function Header({
   };
 
   return (
-    <header className="flex flex-col sm:flex-row sm:items-center justify-between max-w-[1200px] mx-auto w-full gap-4">
+    <header className="flex items-center justify-between max-w-[1200px] mx-auto w-full">
       <motion.h1 
         initial={{ x: -20 }}
         animate={{ x: 0 }}
-        className={cn(
-          "text-2xl font-semibold",
-          isDarkMode ? "text-white" : "text-[#1d1d1f]"
-        )}
+        className="text-2xl font-semibold text-[#1d1d1f]"
       >
         Markdown Magic Share
       </motion.h1>
-      <div className="flex items-center gap-3 flex-wrap justify-end">
+      <div className="flex items-center gap-3">
         <SettingsPanel
           selectedFont={selectedFont}
           setSelectedFont={setSelectedFont}
@@ -189,18 +179,11 @@ export function Header({
           setSelectedPattern={setSelectedPattern}
           selectedColor={selectedColor}
           setSelectedColor={setSelectedColor}
-          isDarkMode={isDarkMode}
-          setIsDarkMode={setIsDarkMode}
         />
         <Button 
           onClick={handleDownload}
           variant="outline" 
-          className={cn(
-            "rounded-full border-0 shadow-sm",
-            isDarkMode
-              ? "bg-gray-800/80 backdrop-blur-xl hover:bg-gray-700/90 text-gray-300"
-              : "bg-white/80 backdrop-blur-xl hover:bg-white/90 text-gray-700"
-          )}
+          className="rounded-full bg-white/80 backdrop-blur-xl border-0 shadow-sm hover:bg-white/90"
         >
           <Download className="h-4 w-4 mr-2" />
           Download PDF
@@ -208,12 +191,7 @@ export function Header({
         <Button 
           onClick={handleShare} 
           variant="outline" 
-          className={cn(
-            "rounded-full border-0 shadow-sm",
-            isDarkMode
-              ? "bg-gray-800/80 backdrop-blur-xl hover:bg-gray-700/90 text-gray-300"
-              : "bg-white/80 backdrop-blur-xl hover:bg-white/90 text-gray-700"
-          )}
+          className="rounded-full bg-white/80 backdrop-blur-xl border-0 shadow-sm hover:bg-white/90"
         >
           <Share2 className="mr-2 h-4 w-4" />
           Share
