@@ -54,25 +54,35 @@ export function Header({
     const element = document.getElementById('markdown-preview');
     if (!element) return;
 
+    // Create a clone of the element to modify for PDF generation
+    const cloneElement = element.cloneNode(true) as HTMLElement;
+    
+    // Force black text color for PDF visibility
+    cloneElement.classList.add('pdf-visible-text');
+    
+    // Set up PDF options
     const opt = {
       margin: 10,
       filename: 'markdown-content.pdf',
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { 
         scale: 2,
-        windowWidth: element.scrollWidth * zoom,
-        windowHeight: element.scrollHeight * zoom
+        useCORS: true,
+        logging: true
       },
       jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
     try {
-      await html2pdf().set(opt).from(element).save();
+      // Use the cloned element for PDF generation
+      await html2pdf().set(opt).from(cloneElement).save();
+      
       toast({
         title: "PDF Generated!",
         description: "Your markdown content has been downloaded as PDF.",
       });
     } catch (error) {
+      console.error("PDF generation error:", error);
       toast({
         title: "Error",
         description: "Failed to generate PDF. Please try again.",
@@ -82,14 +92,17 @@ export function Header({
   };
 
   return (
-    <header className="flex items-center justify-between max-w-[1200px] mx-auto w-full">
-      <motion.h1 
-        initial={{ x: -20 }}
-        animate={{ x: 0 }}
-        className="text-2xl font-semibold text-[#1d1d1f]"
+    <header className="flex flex-col md:flex-row items-center justify-between max-w-[1200px] mx-auto w-full gap-4">
+      <motion.div 
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+        className="floating"
       >
-        Markdown Magic Share
-      </motion.h1>
+        <h1 className="text-2xl font-semibold bg-gradient-to-r from-gray-800 to-gray-500 bg-clip-text text-transparent">
+          Markdown Magic Share
+        </h1>
+      </motion.div>
       <div className="flex items-center gap-3">
         <SettingsPanel
           selectedFont={selectedFont}
@@ -102,7 +115,7 @@ export function Header({
         <Button 
           onClick={handleDownload}
           variant="outline" 
-          className="rounded-full bg-white/80 backdrop-blur-xl border-0 shadow-sm hover:bg-white/90"
+          className="rounded-full glass hover:bg-white/80 transition-all duration-200"
         >
           <Download className="h-4 w-4 mr-2" />
           Download PDF
@@ -110,7 +123,7 @@ export function Header({
         <Button 
           onClick={handleShare} 
           variant="outline" 
-          className="rounded-full bg-white/80 backdrop-blur-xl border-0 shadow-sm hover:bg-white/90"
+          className="rounded-full glass hover:bg-white/80 transition-all duration-200"
         >
           <Share2 className="mr-2 h-4 w-4" />
           Share

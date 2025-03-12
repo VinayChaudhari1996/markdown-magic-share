@@ -33,10 +33,37 @@
 
   body {
     @apply bg-background text-foreground antialiased;
+    background-image: radial-gradient(
+      circle at 90% 10%,
+      rgba(225, 232, 255, 0.7) 0%,
+      rgba(245, 247, 255, 0.4) 50%,
+      rgba(245, 245, 255, 0) 100%
+    );
+    background-attachment: fixed;
+    background-size: cover;
   }
 
   .glass {
     @apply bg-white/60 backdrop-blur-lg border border-white/20 shadow-lg;
+  }
+  
+  .card-gradient {
+    background: linear-gradient(
+      to bottom right,
+      rgba(255, 255, 255, 0.8),
+      rgba(245, 245, 255, 0.5)
+    );
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* For ensuring PDF text is visible */
+  .pdf-visible-text {
+    color: #000000 !important;
+  }
+
+  .pdf-visible-text * {
+    color: #000000 !important;
   }
 }
 
@@ -48,5 +75,33 @@
   
   .scrollbar-hidden::-webkit-scrollbar {
     display: none;
+  }
+  
+  .floating {
+    animation: floating 3s ease-in-out infinite;
+  }
+  
+  @keyframes floating {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+  }
+  
+  .fade-in {
+    animation: fadeIn 0.5s ease-in-out forwards;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  .slide-in {
+    animation: slideIn 0.5s ease-in-out forwards;
+  }
+  
+  @keyframes slideIn {
+    from { transform: translateY(10px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
   }
 }
