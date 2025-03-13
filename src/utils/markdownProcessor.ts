@@ -12,7 +12,7 @@ export const processMarkdown = (content: string) => {
     return `$${trimmedMath}$`;
   });
 
-  // Enhance code blocks format - ensure proper spacing and formatting
+  // Enhanced code blocks format - ensure proper spacing and formatting
   // Preserve indentation and structure for PDF output
   processed = processed.replace(/```(\w*)\n([\s\S]*?)```/g, (match, language, code) => {
     // Normalize line endings
@@ -36,6 +36,7 @@ export const processMarkdown = (content: string) => {
       return line.slice(Math.min(minIndentation, line.match(/^\s*/)[0].length));
     });
     
+    // Ensure code blocks have proper spacing for PDF
     return `\`\`\`${language}\n${formattedLines.join('\n')}\n\`\`\``;
   });
 

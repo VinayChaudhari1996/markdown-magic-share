@@ -34,30 +34,30 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
 
   return (
     <motion.div 
-      className="markdown-code group rounded-xl overflow-hidden break-inside-avoid"
+      className="markdown-code group rounded-xl overflow-hidden break-inside-avoid mb-6"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
     >
       {/* Header with language badge and copy button */}
-      <div className="flex items-center justify-between px-4 py-2 bg-[#1e1e1e] text-white border-b border-gray-700">
+      <div className="flex items-center justify-between px-4 py-2 bg-gray-100 text-gray-800 border-b border-gray-200">
         <div className="flex items-center gap-2">
-          <TerminalSquare className="h-4 w-4 text-blue-400" />
+          <TerminalSquare className="h-4 w-4 text-blue-500" />
           {displayLanguage && (
-            <span className="text-xs font-medium text-gray-300 uppercase tracking-wide">{displayLanguage}</span>
+            <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">{displayLanguage}</span>
           )}
         </div>
         <Button 
           variant="ghost" 
           size="sm" 
           onClick={copyToClipboard}
-          className="text-gray-300 hover:text-white hover:bg-[#2d2d2d] transition-all duration-200"
+          className="text-gray-600 hover:text-gray-900 hover:bg-gray-200 transition-all duration-200"
         >
           {copied ? (
             <motion.div 
               initial={{ scale: 0.8 }} 
               animate={{ scale: 1 }}
-              className="flex items-center gap-1 text-green-400"
+              className="flex items-center gap-1 text-green-600"
             >
               <Check className="h-3.5 w-3.5" />
               <span className="text-xs">Copied!</span>
@@ -76,11 +76,11 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
       </div>
 
       {/* Code content with line numbers */}
-      <div className="bg-[#1e1e1e] text-white pdf-code-block">
+      <div className="bg-gray-50 text-gray-900 pdf-code-block">
         <pre className="py-4 relative">
           {showLineNumbers && (
             <div 
-              className="absolute top-0 left-0 py-4 flex flex-col items-end border-r border-gray-700 bg-[#252525] text-gray-500 select-none"
+              className="absolute top-0 left-0 py-4 flex flex-col items-end border-r border-gray-200 bg-gray-100 text-gray-500 select-none"
               style={{ width: `${lineNumberWidth}px` }}
             >
               {codeLines.map((_, i) => (
@@ -90,9 +90,12 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
               ))}
             </div>
           )}
-          <code className="block pl-4 whitespace-pre-wrap break-words" style={{ paddingLeft: showLineNumbers ? `${lineNumberWidth + 16}px` : '16px' }}>
+          <code 
+            className="block pl-4 text-sm whitespace-pre-wrap break-words font-mono" 
+            style={{ paddingLeft: showLineNumbers ? `${lineNumberWidth + 16}px` : '16px' }}
+          >
             {codeLines.map((line, i) => (
-              <div key={i} className="line min-h-6 leading-6 hover:bg-[#2d2d2d]">
+              <div key={i} className="line min-h-6 leading-6 hover:bg-gray-100">
                 {line || ' '}
               </div>
             ))}

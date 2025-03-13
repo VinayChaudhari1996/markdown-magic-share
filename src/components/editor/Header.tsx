@@ -1,6 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Share2, Download, Settings, Menu } from "lucide-react";
+import { Share2, Download, Menu } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import html2pdf from "html2pdf.js";
 import { SettingsPanel } from "./SettingsPanel";
@@ -14,7 +14,6 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-import { cn } from "@/lib/utils";
 
 interface HeaderProps {
   markdown: string;
@@ -77,6 +76,7 @@ export function Header({
     
     // Apply PDF-specific styling
     cloneElement.classList.add('pdf-visible-text');
+    cloneElement.style.backgroundColor = '#ffffff';
     
     // Find all code blocks and ensure they have PDF-specific class
     const codeBlocks = cloneElement.querySelectorAll('.markdown-code');
@@ -84,9 +84,15 @@ export function Header({
       block.classList.add('pdf-code-block');
     });
     
+    // Ensure line numbers are visible and styled correctly in PDF
+    const lineNumbers = cloneElement.querySelectorAll('.markdown-code pre > div:first-child');
+    lineNumbers.forEach(lines => {
+      lines.classList.add('line-numbers');
+    });
+    
     // Set up PDF options with higher quality and better page breaks
     const opt = {
-      margin: [15, 15, 15, 15],
+      margin: [20, 20, 20, 20],
       filename: 'markdown-content.pdf',
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { 
@@ -101,7 +107,12 @@ export function Header({
         orientation: 'portrait',
         compress: true
       },
-      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+      pagebreak: { 
+        mode: ['avoid-all', 'css', 'legacy'],
+        before: '.page-break-before',
+        after: '.page-break-after',
+        avoid: '.markdown-code'
+      }
     };
 
     try {
@@ -129,7 +140,7 @@ export function Header({
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm">
+    <header className="sticky top-0 z-50 w-full bg-white/90 backdrop-blur-md border-b shadow-sm">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-2">
           <h1 className="text-xl font-semibold text-gray-800 tracking-tight">
@@ -140,7 +151,7 @@ export function Header({
           <NavigationMenu className="hidden md:flex ml-6">
             <NavigationMenuList>
               <NavigationMenuItem>
-                <NavigationMenuTrigger className="h-9 px-4">
+                <NavigationMenuTrigger className="h-9 px-4 bg-white/80">
                   About
                 </NavigationMenuTrigger>
                 <NavigationMenuContent>
@@ -166,7 +177,7 @@ export function Header({
               <NavigationMenuItem>
                 <Button 
                   variant="ghost" 
-                  className="h-9 px-4"
+                  className="h-9 px-4 bg-white/50 hover:bg-white/80"
                   onClick={handleDownload}
                 >
                   <Download className="h-4 w-4 mr-2" />
@@ -176,7 +187,7 @@ export function Header({
               <NavigationMenuItem>
                 <Button 
                   variant="ghost" 
-                  className="h-9 px-4"
+                  className="h-9 px-4 bg-white/50 hover:bg-white/80"
                   onClick={handleShare}
                 >
                   <Share2 className="h-4 w-4 mr-2" />
@@ -202,7 +213,7 @@ export function Header({
           <Button 
             variant="outline" 
             size="icon" 
-            className="md:hidden"
+            className="md:hidden rounded-full"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
             <Menu className="h-5 w-5" />
