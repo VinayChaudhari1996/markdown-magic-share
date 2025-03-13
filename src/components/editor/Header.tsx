@@ -63,23 +63,41 @@ export function Header({
     // Create a clone of the element to modify for PDF generation
     const cloneElement = element.cloneNode(true) as HTMLElement;
     
-    // Force black text color for PDF visibility
+    // Apply PDF-specific styling
     cloneElement.classList.add('pdf-visible-text');
     
-    // Set up PDF options
+    // Find all code blocks and add PDF-specific class
+    const codeBlocks = cloneElement.querySelectorAll('.markdown-code');
+    codeBlocks.forEach(block => {
+      block.classList.add('pdf-code-block');
+    });
+    
+    // Set up PDF options with higher quality
     const opt = {
-      margin: 10,
+      margin: [10, 10, 10, 10],
       filename: 'markdown-content.pdf',
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { 
         scale: 2,
         useCORS: true,
-        logging: true
+        logging: false,
+        backgroundColor: '#ffffff'
       },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      jsPDF: { 
+        unit: 'mm', 
+        format: 'a4', 
+        orientation: 'portrait',
+        compress: true
+      }
     };
 
     try {
+      // Show a loading toast
+      toast({
+        title: "Generating PDF...",
+        description: "Please wait while we prepare your document.",
+      });
+      
       // Use the cloned element for PDF generation
       await html2pdf().set(opt).from(cloneElement).save();
       
@@ -100,7 +118,7 @@ export function Header({
   return (
     <header className="flex flex-col md:flex-row items-center justify-between max-w-[1200px] mx-auto w-full gap-4 py-4 px-2">
       <div className="flex items-center">
-        <h1 className="text-2xl font-semibold bg-gradient-to-r from-gray-800 to-gray-500 bg-clip-text text-transparent">
+        <h1 className="text-2xl font-semibold text-gray-800">
           Markdown Magic Share
         </h1>
       </div>

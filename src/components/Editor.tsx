@@ -91,23 +91,11 @@ export default function Editor() {
         );
       }
       
-      // This will be handled by the pre renderer
-      return <code className={className} {...props}>{children}</code>;
-    },
-    pre: ({ node, children, ...props }) => {
-      // Extract the language from the className
-      const language = 
-        children?.props?.className?.replace(/language-/, '') || 'text';
+      // Extract language from className
+      const language = className?.replace(/language-/, '') || 'text';
+      const code = String(children).replace(/\n$/, '');
       
-      const code = children?.props?.children?.toString() || '';
-      
-      return (
-        <CodeBlock 
-          language={language} 
-          code={code} 
-          showLineNumbers={true}
-        />
-      );
+      return <CodeBlock language={language} code={code} />;
     },
   };
 

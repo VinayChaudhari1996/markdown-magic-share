@@ -12,9 +12,11 @@ export const processMarkdown = (content: string) => {
     return `$${trimmedMath}$`;
   });
 
-  // Enhance code blocks format
+  // Enhance code blocks format - ensure proper spacing and formatting
   processed = processed.replace(/```(\w*)\n([\s\S]*?)```/g, (match, language, code) => {
-    return `\`\`\`${language}\n${code.trim()}\n\`\`\``;
+    // Normalize line endings and trim whitespace consistently
+    const normalizedCode = code.replace(/\r\n/g, '\n').trim();
+    return `\`\`\`${language}\n${normalizedCode}\n\`\`\``;
   });
 
   // Fix common LaTeX commands that might be escaped incorrectly
