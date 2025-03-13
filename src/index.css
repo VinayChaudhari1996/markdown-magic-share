@@ -25,6 +25,7 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
     --radius: 0.75rem;
+    --code-bg: 220 14% 96%;
   }
 
   * {
@@ -65,6 +66,79 @@
   .pdf-visible-text * {
     color: #000000 !important;
   }
+
+  /* Code block styling */
+  .markdown-code {
+    @apply relative my-4 rounded-xl overflow-hidden font-mono text-sm bg-[hsl(var(--code-bg))] border border-gray-200/50 shadow-md;
+  }
+
+  .markdown-code pre {
+    @apply p-4 m-0 overflow-x-auto transition-all duration-200;
+  }
+
+  .markdown-code code {
+    @apply text-[#1a1a1a] font-medium;
+  }
+
+  /* Line numbers */
+  .markdown-code pre {
+    counter-reset: line;
+  }
+
+  .markdown-code code .line {
+    @apply inline-block w-full;
+  }
+
+  .markdown-code code .line::before {
+    counter-increment: line;
+    content: counter(line);
+    @apply inline-block w-7 mr-4 text-right text-gray-400 select-none;
+  }
+
+  /* Syntax highlighting */
+  .token.comment,
+  .token.prolog,
+  .token.doctype,
+  .token.cdata {
+    @apply text-gray-500;
+  }
+
+  .token.punctuation {
+    @apply text-gray-600;
+  }
+
+  .token.property,
+  .token.tag,
+  .token.boolean,
+  .token.number,
+  .token.constant,
+  .token.symbol {
+    @apply text-indigo-600;
+  }
+
+  .token.selector,
+  .token.attr-name,
+  .token.string,
+  .token.char,
+  .token.builtin {
+    @apply text-emerald-600;
+  }
+
+  .token.operator,
+  .token.entity,
+  .token.url,
+  .language-css .token.string,
+  .style .token.string {
+    @apply text-amber-700;
+  }
+
+  .token.keyword {
+    @apply text-blue-600 font-medium;
+  }
+
+  .token.function {
+    @apply text-rose-600;
+  }
 }
 
 @layer utilities {
@@ -104,4 +178,25 @@
     from { transform: translateY(10px); opacity: 0; }
     to { transform: translateY(0); opacity: 1; }
   }
+
+  .scale-in {
+    animation: scaleIn 0.3s ease-out forwards;
+  }
+  
+  @keyframes scaleIn {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  /* Fade in staggered children animation */
+  .stagger-fade-in > * {
+    opacity: 0;
+    animation: fadeIn 0.5s ease-in-out forwards;
+  }
+
+  .stagger-fade-in > *:nth-child(1) { animation-delay: 0.1s; }
+  .stagger-fade-in > *:nth-child(2) { animation-delay: 0.2s; }
+  .stagger-fade-in > *:nth-child(3) { animation-delay: 0.3s; }
+  .stagger-fade-in > *:nth-child(4) { animation-delay: 0.4s; }
+  .stagger-fade-in > *:nth-child(5) { animation-delay: 0.5s; }
 }

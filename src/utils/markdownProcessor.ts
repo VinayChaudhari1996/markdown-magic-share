@@ -12,6 +12,11 @@ export const processMarkdown = (content: string) => {
     return `$${trimmedMath}$`;
   });
 
+  // Enhance code blocks format
+  processed = processed.replace(/```(\w*)\n([\s\S]*?)```/g, (match, language, code) => {
+    return `\`\`\`${language}\n${code.trim()}\n\`\`\``;
+  });
+
   // Fix common LaTeX commands that might be escaped incorrectly
   processed = processed
     .replace(/\\\\/g, '\\') // Fix double backslashes

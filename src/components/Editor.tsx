@@ -13,6 +13,7 @@ import { processMarkdown } from "@/utils/markdownProcessor";
 import { Header } from "./editor/Header";
 import { EyeOff, Eye } from "lucide-react";
 import { Button } from "./ui/button";
+import { CodeBlock } from "./editor/CodeBlock";
 
 export default function Editor() {
   const [markdown, setMarkdown] = useState("");
@@ -64,20 +65,50 @@ export default function Editor() {
     setIsEditorVisible(!isEditorVisible);
   };
 
-  // Component for the markdown renderers to ensure text visibility in PDFs
+  // Component for the markdown renderers
   const renderers = {
-    p: ({ node, ...props }) => <p className="pdf-visible-text" {...props} />,
-    h1: ({ node, ...props }) => <h1 className="pdf-visible-text" {...props} />,
-    h2: ({ node, ...props }) => <h2 className="pdf-visible-text" {...props} />,
-    h3: ({ node, ...props }) => <h3 className="pdf-visible-text" {...props} />,
-    h4: ({ node, ...props }) => <h4 className="pdf-visible-text" {...props} />,
-    h5: ({ node, ...props }) => <h5 className="pdf-visible-text" {...props} />,
-    h6: ({ node, ...props }) => <h6 className="pdf-visible-text" {...props} />,
-    li: ({ node, ...props }) => <li className="pdf-visible-text" {...props} />,
-    a: ({ node, ...props }) => <a className="pdf-visible-text" {...props} />,
-    blockquote: ({ node, ...props }) => <blockquote className="pdf-visible-text" {...props} />,
-    code: ({ node, ...props }) => <code className="pdf-visible-text" {...props} />,
-    pre: ({ node, ...props }) => <pre className="pdf-visible-text" {...props} />,
+    p: ({ node, ...props }) => <p className="pdf-visible-text my-4" {...props} />,
+    h1: ({ node, ...props }) => <h1 className="pdf-visible-text mt-8 mb-4 text-3xl font-bold" {...props} />,
+    h2: ({ node, ...props }) => <h2 className="pdf-visible-text mt-6 mb-4 text-2xl font-bold" {...props} />,
+    h3: ({ node, ...props }) => <h3 className="pdf-visible-text mt-5 mb-3 text-xl font-bold" {...props} />,
+    h4: ({ node, ...props }) => <h4 className="pdf-visible-text mt-4 mb-2 text-lg font-bold" {...props} />,
+    h5: ({ node, ...props }) => <h5 className="pdf-visible-text mt-4 mb-2 text-base font-bold" {...props} />,
+    h6: ({ node, ...props }) => <h6 className="pdf-visible-text mt-4 mb-2 text-sm font-bold" {...props} />,
+    li: ({ node, ...props }) => <li className="pdf-visible-text my-1" {...props} />,
+    a: ({ node, ...props }) => <a className="pdf-visible-text text-blue-600 hover:text-blue-800 underline" {...props} />,
+    blockquote: ({ node, ...props }) => (
+      <blockquote className="pdf-visible-text border-l-4 border-gray-300 pl-4 italic my-4" {...props} />
+    ),
+    code: ({ node, inline, className, children, ...props }) => {
+      if (inline) {
+        return (
+          <code
+            className="px-1.5 py-0.5 mx-0.5 rounded bg-gray-100 font-mono text-sm"
+            {...props}
+          >
+            {children}
+          </code>
+        );
+      }
+      
+      // This will be handled by the pre renderer
+      return <code className={className} {...props}>{children}</code>;
+    },
+    pre: ({ node, children, ...props }) => {
+      // Extract the language from the className
+      const language = 
+        children?.props?.className?.replace(/language-/, '') || 'text';
+      
+      const code = children?.props?.children?.toString() || '';
+      
+      return (
+        <CodeBlock 
+          language={language} 
+          code={code} 
+          showLineNumbers={true}
+        />
+      );
+    },
   };
 
   return (
@@ -103,7 +134,7 @@ export default function Editor() {
             variant="ghost"
             size="sm"
             onClick={toggleEditor}
-            className="rounded-full glass hover:bg-white/80"
+            className="rounded-full glass hover:bg-white/80 transition-all duration-300 scale-in"
           >
             {isEditorVisible ? <EyeOff className="h-4 w-4 mr-2" /> : <Eye className="h-4 w-4 mr-2" />}
             {isEditorVisible ? "Hide Editor" : "Show Editor"}
@@ -121,13 +152,14 @@ export default function Editor() {
                   <textarea
                     value={markdown}
                     onChange={(e) => setMarkdown(e.target.value)}
-                    placeholder="Enter your markdown here... (Try some math: $E = mc^2$ or \[ E^2 = (mc^2)^2 + (pc)^2 \])"
+                    placeholder="Enter your markdown here... (Try some math: $E = mc^2$ or \[ E^2 = (mc^2)^2 + (pc)^2 \] or code blocks with ```language\ncode here\n```)"
                     className="w-full h-full resize-none bg-transparent font-mono text-sm focus:outline-none p-6 placeholder:text-[#86868b] focus:ring-2 focus:ring-blue-500/10 rounded-lg transition-all scrollbar-hidden"
                     style={{ 
                       fontFamily: "'SF Mono', 'JetBrains Mono', monospace",
                       lineHeight: '1.6',
                       letterSpacing: '0.3px'
                     }}
+                    spellCheck={false}
                   />
                 </Card>
               </ResizablePanel>
@@ -145,13 +177,13 @@ export default function Editor() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="h-full p-6 prose prose-sm md:prose-base lg:prose-lg dark:prose-invert max-w-none overflow-y-auto scrollbar-hidden"
+                  className="h-full p-6 prose prose-sm md:prose-base lg:prose-lg dark:prose-invert max-w-none overflow-y-auto scrollbar-hidden stagger-fade-in"
                   style={{ 
                     fontFamily: fontOptions.find(f => f.value === selectedFont)?.family,
                     ...getBackgroundStyle(),
                     transform: `scale(${zoom})`,
                     transformOrigin: 'top left',
-                    transition: 'transform 0.2s ease-out'
+                    transition: 'all 0.3s ease-out'
                   }}
                 >
                   <ReactMarkdown
