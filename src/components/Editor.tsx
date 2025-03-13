@@ -20,11 +20,16 @@ export default function Editor() {
   const [selectedPattern, setSelectedPattern] = useState("none");
   const [selectedColor, setSelectedColor] = useState("white");
   const [zoom, setZoom] = useState(1);
-  const [isEditorVisible, setIsEditorVisible] = useState(false);
+  const [isEditorVisible, setIsEditorVisible] = useState(true);
+  const [isSharedUrl, setIsSharedUrl] = useState(false);
 
   useEffect(() => {
     const hash = window.location.hash.slice(1);
     if (hash) {
+      // If there's a hash in the URL, this is a shared URL
+      setIsSharedUrl(true);
+      setIsEditorVisible(false); // Hide editor for shared URLs
+      
       try {
         const decodedContent = decodeURIComponent(atob(hash));
         try {
