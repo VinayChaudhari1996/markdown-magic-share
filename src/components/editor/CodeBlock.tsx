@@ -34,7 +34,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
 
   return (
     <motion.div 
-      className="markdown-code group rounded-xl overflow-hidden"
+      className="markdown-code group rounded-xl overflow-hidden break-inside-avoid"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
@@ -76,7 +76,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
       </div>
 
       {/* Code content with line numbers */}
-      <div className="bg-[#1e1e1e] text-white overflow-auto pdf-code-block">
+      <div className="bg-[#1e1e1e] text-white pdf-code-block">
         <pre className="py-4 relative">
           {showLineNumbers && (
             <div 
@@ -84,15 +84,15 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
               style={{ width: `${lineNumberWidth}px` }}
             >
               {codeLines.map((_, i) => (
-                <div key={`line-${i}`} className="px-2 h-6 leading-6 text-xs">
+                <div key={`line-${i}`} className="px-2 min-h-6 leading-6 text-xs">
                   {i + 1}
                 </div>
               ))}
             </div>
           )}
-          <code className="block pl-4" style={{ paddingLeft: showLineNumbers ? `${lineNumberWidth + 16}px` : '16px' }}>
+          <code className="block pl-4 whitespace-pre-wrap break-words" style={{ paddingLeft: showLineNumbers ? `${lineNumberWidth + 16}px` : '16px' }}>
             {codeLines.map((line, i) => (
-              <div key={i} className="line h-6 leading-6 hover:bg-[#2d2d2d]">
+              <div key={i} className="line min-h-6 leading-6 hover:bg-[#2d2d2d]">
                 {line || ' '}
               </div>
             ))}

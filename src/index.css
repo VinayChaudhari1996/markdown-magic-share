@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -60,6 +61,8 @@
   /* For ensuring PDF text is visible */
   .pdf-visible-text {
     color: #000000 !important;
+    break-inside: auto !important;
+    page-break-inside: auto !important;
   }
 
   .pdf-visible-text * {
@@ -70,6 +73,8 @@
   .pdf-code-block {
     page-break-inside: avoid !important;
     break-inside: avoid !important;
+    overflow: visible !important;
+    white-space: pre-wrap !important;
   }
   
   /* Ensure background colors are preserved in PDF */
@@ -77,34 +82,45 @@
   .pdf-code-block code {
     background-color: #1e1e1e !important;
     color: #ffffff !important;
+    overflow: visible !important;
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
   }
   
   .pdf-code-block .line {
     background-color: transparent !important;
     color: #ffffff !important;
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
   }
 
   /* Code block styling - Monaco-like appearance */
   .markdown-code {
-    @apply relative my-4 rounded-xl overflow-hidden font-mono text-sm shadow-lg border border-gray-700;
+    @apply relative my-4 rounded-xl overflow-hidden font-mono text-sm shadow-lg border border-gray-700 break-inside-avoid;
     background-color: #1e1e1e;
   }
 
   .markdown-code pre {
-    @apply p-0 m-0 overflow-x-auto transition-all duration-200;
+    @apply p-0 m-0 transition-all duration-200 overflow-visible;
     font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace;
+    white-space: pre-wrap;
+    word-break: break-word;
   }
 
   .markdown-code code {
-    @apply font-medium text-[#d4d4d4];
+    @apply font-medium text-[#d4d4d4] overflow-visible;
     font-size: 0.85rem;
     letter-spacing: 0.3px;
+    white-space: pre-wrap;
+    word-break: break-word;
   }
 
   /* Line styling */
   .markdown-code .line {
     @apply transition-colors duration-75;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    white-space: pre-wrap;
+    word-break: break-word;
   }
 
   /* Syntax highlighting - VS Code-like */

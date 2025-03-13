@@ -97,14 +97,28 @@ export default function Editor() {
       
       return <CodeBlock language={language} code={code} />;
     },
+    // Add table renderer to ensure proper table formatting in PDFs
+    table: ({ node, ...props }) => (
+      <div className="my-4 overflow-hidden border rounded-lg pdf-table">
+        <table className="min-w-full divide-y divide-gray-200" {...props} />
+      </div>
+    ),
+    th: ({ node, ...props }) => (
+      <th 
+        className="px-4 py-2 text-left text-sm font-medium text-gray-900 bg-gray-100" 
+        {...props} 
+      />
+    ),
+    td: ({ node, ...props }) => (
+      <td 
+        className="px-4 py-2 text-sm text-gray-900 border-t border-gray-200" 
+        {...props} 
+      />
+    ),
   };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="min-h-screen w-full py-10 px-6 md:px-10 flex flex-col gap-6"
-    >
+    <div className="flex flex-col min-h-screen bg-gray-50">
       <Header
         markdown={markdown}
         selectedFont={selectedFont}
@@ -116,13 +130,13 @@ export default function Editor() {
         zoom={zoom}
       />
 
-      <div className="flex-1 flex flex-col max-w-[1200px] mx-auto w-full">
+      <main className="flex-1 flex flex-col container mx-auto py-6 px-4">
         <div className="flex justify-end mb-2">
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
             onClick={toggleEditor}
-            className="rounded-full glass hover:bg-white/80 transition-all duration-300 scale-in"
+            className="rounded-full transition-all duration-300"
           >
             {isEditorVisible ? <EyeOff className="h-4 w-4 mr-2" /> : <Eye className="h-4 w-4 mr-2" />}
             {isEditorVisible ? "Hide Editor" : "Show Editor"}
@@ -131,17 +145,17 @@ export default function Editor() {
         
         <ResizablePanelGroup
           direction="horizontal"
-          className="flex-1 rounded-2xl card-gradient shadow-sm overflow-hidden"
+          className="flex-1 rounded-lg border shadow-sm overflow-hidden bg-white"
         >
           {isEditorVisible && (
             <>
               <ResizablePanel defaultSize={40} minSize={30}>
-                <Card className="h-full border-0 rounded-none bg-transparent">
+                <div className="h-full border-r">
                   <textarea
                     value={markdown}
                     onChange={(e) => setMarkdown(e.target.value)}
                     placeholder="Enter your markdown here... (Try some math: $E = mc^2$ or \[ E^2 = (mc^2)^2 + (pc)^2 \] or code blocks with ```language\ncode here\n```)"
-                    className="w-full h-full resize-none bg-transparent font-mono text-sm focus:outline-none p-6 placeholder:text-[#86868b] focus:ring-2 focus:ring-blue-500/10 rounded-lg transition-all scrollbar-hidden"
+                    className="w-full h-full resize-none font-mono text-sm focus:outline-none p-6 placeholder:text-gray-400"
                     style={{ 
                       fontFamily: "'SF Mono', 'JetBrains Mono', monospace",
                       lineHeight: '1.6',
@@ -149,10 +163,10 @@ export default function Editor() {
                     }}
                     spellCheck={false}
                   />
-                </Card>
+                </div>
               </ResizablePanel>
 
-              <ResizableHandle withHandle className="transition-colors hover:bg-blue-100" />
+              <ResizableHandle withHandle />
             </>
           )}
 
@@ -162,16 +176,15 @@ export default function Editor() {
                 <motion.div
                   id="markdown-preview"
                   key={`${selectedFont}-${selectedPattern}-${selectedColor}-${zoom}`}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="h-full p-6 prose prose-sm md:prose-base lg:prose-lg dark:prose-invert max-w-none overflow-y-auto scrollbar-hidden stagger-fade-in"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="h-full p-8 prose prose-sm md:prose-base lg:prose-lg dark:prose-invert max-w-none overflow-y-auto"
                   style={{ 
                     fontFamily: fontOptions.find(f => f.value === selectedFont)?.family,
                     ...getBackgroundStyle(),
                     transform: `scale(${zoom})`,
                     transformOrigin: 'top left',
-                    transition: 'all 0.3s ease-out'
                   }}
                 >
                   <ReactMarkdown
@@ -186,7 +199,7 @@ export default function Editor() {
             </div>
           </ResizablePanel>
         </ResizablePanelGroup>
-      </div>
-    </motion.div>
+      </main>
+    </div>
   );
 }

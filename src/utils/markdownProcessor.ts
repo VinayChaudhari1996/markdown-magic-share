@@ -13,10 +13,30 @@ export const processMarkdown = (content: string) => {
   });
 
   // Enhance code blocks format - ensure proper spacing and formatting
+  // Preserve indentation and structure for PDF output
   processed = processed.replace(/```(\w*)\n([\s\S]*?)```/g, (match, language, code) => {
-    // Normalize line endings and trim whitespace consistently
+    // Normalize line endings
     const normalizedCode = code.replace(/\r\n/g, '\n').trim();
-    return `\`\`\`${language}\n${normalizedCode}\n\`\`\``;
+    
+    // Count indentation levels for PDF rendering enhancement
+    const lines = normalizedCode.split('\n');
+    const indentationLevels = lines.map(line => {
+      const match = line.match(/^(\s+)/);
+      return match ? match[1].length : 0;
+    });
+    
+    // Find the minimum indentation (excluding empty lines)
+    const nonEmptyIndentations = indentationLevels.filter((level, i) => lines[i].trim().length > 0);
+    const minIndentation = nonEmptyIndentations.length > 0 ? 
+      Math.min(...nonEmptyIndentations) : 0;
+    
+    // Remove common indentation for cleaner code blocks
+    const formattedLines = lines.map(line => {
+      if (line.trim().length === 0) return '';
+      return line.slice(Math.min(minIndentation, line.match(/^\s*/)[0].length));
+    });
+    
+    return `\`\`\`${language}\n${formattedLines.join('\n')}\n\`\`\``;
   });
 
   // Fix common LaTeX commands that might be escaped incorrectly

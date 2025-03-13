@@ -1,9 +1,20 @@
 
 import { Button } from "@/components/ui/button";
-import { Share2, Download } from "lucide-react";
+import { Share2, Download, Settings, Menu } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import html2pdf from "html2pdf.js";
 import { SettingsPanel } from "./SettingsPanel";
+import { useState } from "react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
+import { cn } from "@/lib/utils";
 
 interface HeaderProps {
   markdown: string;
@@ -27,6 +38,7 @@ export function Header({
   zoom,
 }: HeaderProps) {
   const { toast } = useToast();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleShare = () => {
     try {
@@ -66,15 +78,15 @@ export function Header({
     // Apply PDF-specific styling
     cloneElement.classList.add('pdf-visible-text');
     
-    // Find all code blocks and add PDF-specific class
+    // Find all code blocks and ensure they have PDF-specific class
     const codeBlocks = cloneElement.querySelectorAll('.markdown-code');
     codeBlocks.forEach(block => {
       block.classList.add('pdf-code-block');
     });
     
-    // Set up PDF options with higher quality
+    // Set up PDF options with higher quality and better page breaks
     const opt = {
-      margin: [10, 10, 10, 10],
+      margin: [15, 15, 15, 15],
       filename: 'markdown-content.pdf',
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { 
@@ -88,7 +100,8 @@ export function Header({
         format: 'a4', 
         orientation: 'portrait',
         compress: true
-      }
+      },
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
     };
 
     try {
@@ -116,38 +129,112 @@ export function Header({
   };
 
   return (
-    <header className="flex flex-col md:flex-row items-center justify-between max-w-[1200px] mx-auto w-full gap-4 py-4 px-2">
-      <div className="flex items-center">
-        <h1 className="text-2xl font-semibold text-gray-800">
-          Markdown Magic Share
-        </h1>
+    <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-200 shadow-sm">
+      <div className="container flex h-16 items-center justify-between">
+        <div className="flex items-center gap-2">
+          <h1 className="text-xl font-semibold text-gray-800 tracking-tight">
+            Markdown Magic
+          </h1>
+          
+          {/* Desktop Navigation */}
+          <NavigationMenu className="hidden md:flex ml-6">
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger className="h-9 px-4">
+                  About
+                </NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ScrollArea className="h-[400px] w-[400px] p-4">
+                    <div className="grid gap-3 p-4">
+                      <h4 className="font-medium leading-none">About Markdown Magic</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Create beautiful markdown documents and share them with others.
+                        Supports LaTeX, code highlighting, and PDF export.
+                      </p>
+                    </div>
+                    <div className="grid gap-3 p-4 border-t pt-2">
+                      <h4 className="font-medium leading-none">Tips</h4>
+                      <ul className="grid gap-1.5 text-sm">
+                        <li>• Use ```language for code blocks</li>
+                        <li>• Use $formula$ for inline math</li>
+                        <li>• Use $$formula$$ for display math</li>
+                      </ul>
+                    </div>
+                  </ScrollArea>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Button 
+                  variant="ghost" 
+                  className="h-9 px-4"
+                  onClick={handleDownload}
+                >
+                  <Download className="h-4 w-4 mr-2" />
+                  Download
+                </Button>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <Button 
+                  variant="ghost" 
+                  className="h-9 px-4"
+                  onClick={handleShare}
+                >
+                  <Share2 className="h-4 w-4 mr-2" />
+                  Share
+                </Button>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+        </div>
+        
+        {/* Settings for both mobile and desktop */}
+        <div className="flex items-center gap-2">
+          <SettingsPanel
+            selectedFont={selectedFont}
+            setSelectedFont={setSelectedFont}
+            selectedPattern={selectedPattern}
+            setSelectedPattern={setSelectedPattern}
+            selectedColor={selectedColor}
+            setSelectedColor={setSelectedColor}
+          />
+          
+          {/* Mobile menu button */}
+          <Button 
+            variant="outline" 
+            size="icon" 
+            className="md:hidden"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
+        </div>
       </div>
-      <div className="flex items-center gap-3">
-        <SettingsPanel
-          selectedFont={selectedFont}
-          setSelectedFont={setSelectedFont}
-          selectedPattern={selectedPattern}
-          setSelectedPattern={setSelectedPattern}
-          selectedColor={selectedColor}
-          setSelectedColor={setSelectedColor}
-        />
-        <Button 
-          onClick={handleDownload}
-          variant="outline" 
-          className="rounded-full glass hover:bg-white/80 transition-all duration-200"
-        >
-          <Download className="h-4 w-4 mr-2" />
-          Download PDF
-        </Button>
-        <Button 
-          onClick={handleShare} 
-          variant="outline" 
-          className="rounded-full glass hover:bg-white/80 transition-all duration-200"
-        >
-          <Share2 className="mr-2 h-4 w-4" />
-          Share
-        </Button>
-      </div>
+      
+      {/* Mobile menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden border-t border-gray-200">
+          <div className="flex flex-col space-y-1 p-3">
+            <Button 
+              variant="ghost" 
+              size="sm"
+              className="justify-start"
+              onClick={handleDownload}
+            >
+              <Download className="h-4 w-4 mr-2" />
+              Download PDF
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="sm"
+              className="justify-start"
+              onClick={handleShare}
+            >
+              <Share2 className="h-4 w-4 mr-2" />
+              Share
+            </Button>
+          </div>
+        </div>
+      )}
     </header>
   );
 }
