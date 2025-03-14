@@ -3,17 +3,20 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Check, Copy, TerminalSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { codeBlockThemes } from '@/lib/patterns';
 
 interface CodeBlockProps {
   language: string;
   code: string;
   showLineNumbers?: boolean;
+  themeId?: string;
 }
 
 export const CodeBlock: React.FC<CodeBlockProps> = ({ 
   language, 
   code,
-  showLineNumbers = true 
+  showLineNumbers = true,
+  themeId = 'light'
 }) => {
   const [copied, setCopied] = useState(false);
 
@@ -32,26 +35,40 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
   // Calculate the width needed for line numbers (based on number of digits)
   const lineNumberWidth = codeLines.length.toString().length * 14 + 10;
 
+  // Get theme properties
+  const theme = codeBlockThemes.find(theme => theme.id === themeId) || codeBlockThemes[0];
+
   return (
     <motion.div 
       className="markdown-code group rounded-xl overflow-hidden break-inside-avoid mb-6"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
+      style={{
+        backgroundColor: theme.bgColor,
+        color: theme.textColor,
+        borderColor: theme.borderColor
+      }}
     >
       {/* Header with language badge and copy button */}
-      <div className="flex items-center justify-between px-4 py-2 bg-gray-100 text-gray-800 border-b border-gray-200">
+      <div 
+        className="flex items-center justify-between px-4 py-2 border-b"
+        style={{ borderColor: theme.borderColor, backgroundColor: theme.lineNumberBg }}
+      >
         <div className="flex items-center gap-2">
           <TerminalSquare className="h-4 w-4 text-blue-500" />
           {displayLanguage && (
-            <span className="text-xs font-medium text-gray-600 uppercase tracking-wide">{displayLanguage}</span>
+            <span className="text-xs font-medium uppercase tracking-wide" style={{ color: theme.textColor }}>
+              {displayLanguage}
+            </span>
           )}
         </div>
         <Button 
           variant="ghost" 
           size="sm" 
           onClick={copyToClipboard}
-          className="text-gray-600 hover:text-gray-900 hover:bg-gray-200 transition-all duration-200"
+          className="hover:bg-gray-200 transition-all duration-200"
+          style={{ color: theme.textColor }}
         >
           {copied ? (
             <motion.div 
@@ -76,12 +93,17 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
       </div>
 
       {/* Code content with line numbers */}
-      <div className="bg-gray-50 text-gray-900 pdf-code-block">
+      <div className="pdf-code-block" style={{ backgroundColor: theme.bgColor, color: theme.textColor }}>
         <pre className="py-4 relative">
           {showLineNumbers && (
             <div 
-              className="absolute top-0 left-0 py-4 flex flex-col items-end border-r border-gray-200 bg-gray-100 text-gray-500 select-none"
-              style={{ width: `${lineNumberWidth}px` }}
+              className="absolute top-0 left-0 py-4 flex flex-col items-end border-r select-none"
+              style={{ 
+                width: `${lineNumberWidth}px`, 
+                backgroundColor: theme.lineNumberBg, 
+                color: theme.lineNumberColor,
+                borderColor: theme.borderColor
+              }}
             >
               {codeLines.map((_, i) => (
                 <div key={`line-${i}`} className="px-2 min-h-6 leading-6 text-xs">
@@ -92,10 +114,17 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
           )}
           <code 
             className="block pl-4 text-sm whitespace-pre-wrap break-words font-mono" 
-            style={{ paddingLeft: showLineNumbers ? `${lineNumberWidth + 16}px` : '16px' }}
+            style={{ 
+              paddingLeft: showLineNumbers ? `${lineNumberWidth + 16}px` : '16px',
+              color: theme.textColor
+            }}
           >
             {codeLines.map((line, i) => (
-              <div key={i} className="line min-h-6 leading-6 hover:bg-gray-100">
+              <div 
+                key={i} 
+                className="line min-h-6 leading-6 hover:bg-gray-100/50"
+                style={{ color: theme.textColor }}
+              >
                 {line || ' '}
               </div>
             ))}

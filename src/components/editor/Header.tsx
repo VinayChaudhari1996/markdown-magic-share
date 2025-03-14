@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Share2, Download, Menu } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
@@ -6,6 +5,7 @@ import html2pdf from "html2pdf.js";
 import { SettingsPanel } from "./SettingsPanel";
 import { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { codeBlockThemes } from "@/lib/patterns";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -23,6 +23,8 @@ interface HeaderProps {
   setSelectedPattern: (pattern: string) => void;
   selectedColor: string;
   setSelectedColor: (color: string) => void;
+  selectedCodeTheme: string;
+  setSelectedCodeTheme: (theme: string) => void;
   zoom: number;
 }
 
@@ -34,6 +36,8 @@ export function Header({
   setSelectedPattern,
   selectedColor,
   setSelectedColor,
+  selectedCodeTheme,
+  setSelectedCodeTheme,
   zoom,
 }: HeaderProps) {
   const { toast } = useToast();
@@ -47,6 +51,7 @@ export function Header({
         font: selectedFont,
         pattern: selectedPattern,
         color: selectedColor,
+        codeTheme: selectedCodeTheme
       });
       
       const encodedContent = btoa(encodeURIComponent(contentToEncode));
@@ -78,16 +83,37 @@ export function Header({
     cloneElement.classList.add('pdf-visible-text');
     cloneElement.style.backgroundColor = '#ffffff';
     
-    // Find all code blocks and ensure they have PDF-specific class
+    // Get current code theme for PDF export
+    const codeTheme = codeBlockThemes.find(theme => theme.id === selectedCodeTheme) || codeBlockThemes[0];
+    
+    // Find all code blocks and ensure they have PDF-specific class and styling
     const codeBlocks = cloneElement.querySelectorAll('.markdown-code');
     codeBlocks.forEach(block => {
       block.classList.add('pdf-code-block');
-    });
-    
-    // Ensure line numbers are visible and styled correctly in PDF
-    const lineNumbers = cloneElement.querySelectorAll('.markdown-code pre > div:first-child');
-    lineNumbers.forEach(lines => {
-      lines.classList.add('line-numbers');
+      (block as HTMLElement).style.backgroundColor = codeTheme.bgColor;
+      (block as HTMLElement).style.color = codeTheme.textColor;
+      (block as HTMLElement).style.borderColor = codeTheme.borderColor;
+      
+      // Style the code block header
+      const header = block.querySelector('.markdown-code > div:first-child') as HTMLElement;
+      if (header) {
+        header.style.backgroundColor = codeTheme.lineNumberBg;
+        header.style.borderColor = codeTheme.borderColor;
+      }
+      
+      // Style the line numbers
+      const lineNumbers = block.querySelector('.py-4 > div:first-child') as HTMLElement;
+      if (lineNumbers) {
+        lineNumbers.style.backgroundColor = codeTheme.lineNumberBg;
+        lineNumbers.style.color = codeTheme.lineNumberColor;
+        lineNumbers.style.borderColor = codeTheme.borderColor;
+      }
+      
+      // Style the code content
+      const codeContent = block.querySelectorAll('code, .line') as NodeListOf<HTMLElement>;
+      codeContent.forEach(element => {
+        element.style.color = codeTheme.textColor;
+      });
     });
     
     // Set up PDF options with higher quality and better page breaks
@@ -207,6 +233,8 @@ export function Header({
             setSelectedPattern={setSelectedPattern}
             selectedColor={selectedColor}
             setSelectedColor={setSelectedColor}
+            selectedCodeTheme={selectedCodeTheme}
+            setSelectedCodeTheme={setSelectedCodeTheme}
           />
           
           {/* Mobile menu button */}

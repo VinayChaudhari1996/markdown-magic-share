@@ -5,8 +5,8 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTr
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Settings2, Paintbrush, Type, Grid3X3 } from "lucide-react";
-import { backgroundPatterns, backgroundColors } from "@/lib/patterns";
+import { Settings2, Paintbrush, Type, Grid3X3, Code } from "lucide-react";
+import { backgroundPatterns, backgroundColors, codeBlockThemes } from "@/lib/patterns";
 import { fontOptions } from "@/lib/fonts";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -18,6 +18,8 @@ interface SettingsPanelProps {
   setSelectedPattern: (pattern: string) => void;
   selectedColor: string;
   setSelectedColor: (color: string) => void;
+  selectedCodeTheme: string;
+  setSelectedCodeTheme: (theme: string) => void;
 }
 
 export function SettingsPanel({
@@ -27,6 +29,8 @@ export function SettingsPanel({
   setSelectedPattern,
   selectedColor,
   setSelectedColor,
+  selectedCodeTheme,
+  setSelectedCodeTheme,
 }: SettingsPanelProps) {
   return (
     <Sheet>
@@ -51,94 +55,139 @@ export function SettingsPanel({
           </SheetDescription>
         </SheetHeader>
         <Separator className="my-4" />
-        <div className="space-y-6 py-4">
-          <motion.div
-            initial={{ opacity: 0, y: 5 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="space-y-2"
-          >
-            <div className="flex items-center gap-2">
-              <Type className="h-4 w-4 text-blue-500" />
-              <h4 className="text-sm font-medium">Typography</h4>
-            </div>
-            <Card className="border-0 shadow-sm bg-white/80 backdrop-blur-sm">
-              <CardContent className="p-3">
-                <Select value={selectedFont} onValueChange={setSelectedFont}>
-                  <SelectTrigger className="w-full border rounded-md">
-                    <SelectValue placeholder="Select font" />
-                  </SelectTrigger>
-                  <SelectContent className="border-0 shadow-md rounded-md">
-                    <ScrollArea className="h-[200px]">
-                      {fontOptions.map((font) => (
-                        <SelectItem key={font.value} value={font.value}>
-                          {font.label}
+        <ScrollArea className="h-[calc(100vh-180px)] pr-4">
+          <div className="space-y-6 py-4">
+            <motion.div
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="space-y-2"
+            >
+              <div className="flex items-center gap-2">
+                <Type className="h-4 w-4 text-blue-500" />
+                <h4 className="text-sm font-medium">Typography</h4>
+              </div>
+              <Card className="border shadow-sm bg-white/90 backdrop-blur-sm">
+                <CardContent className="p-3">
+                  <Select value={selectedFont} onValueChange={setSelectedFont}>
+                    <SelectTrigger className="w-full border rounded-md">
+                      <SelectValue placeholder="Select font" />
+                    </SelectTrigger>
+                    <SelectContent className="border-0 shadow-md rounded-md">
+                      <ScrollArea className="h-[200px]">
+                        {fontOptions.map((font) => (
+                          <SelectItem key={font.value} value={font.value}>
+                            {font.label}
+                          </SelectItem>
+                        ))}
+                      </ScrollArea>
+                    </SelectContent>
+                  </Select>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="space-y-2"
+            >
+              <div className="flex items-center gap-2">
+                <Grid3X3 className="h-4 w-4 text-blue-500" />
+                <h4 className="text-sm font-medium">Background Pattern</h4>
+              </div>
+              <Card className="border shadow-sm bg-white/90 backdrop-blur-sm">
+                <CardContent className="p-3">
+                  <Select value={selectedPattern} onValueChange={setSelectedPattern}>
+                    <SelectTrigger className="w-full border rounded-md">
+                      <SelectValue placeholder="Select pattern" />
+                    </SelectTrigger>
+                    <SelectContent className="border-0 shadow-md rounded-md">
+                      {backgroundPatterns.map((pattern) => (
+                        <SelectItem key={pattern.id} value={pattern.id}>
+                          {pattern.label}
                         </SelectItem>
                       ))}
-                    </ScrollArea>
-                  </SelectContent>
-                </Select>
-              </CardContent>
-            </Card>
-          </motion.div>
+                    </SelectContent>
+                  </Select>
+                </CardContent>
+              </Card>
+            </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 5 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="space-y-2"
-          >
-            <div className="flex items-center gap-2">
-              <Grid3X3 className="h-4 w-4 text-blue-500" />
-              <h4 className="text-sm font-medium">Background Pattern</h4>
-            </div>
-            <Card className="border-0 shadow-sm bg-white/80 backdrop-blur-sm">
-              <CardContent className="p-3">
-                <Select value={selectedPattern} onValueChange={setSelectedPattern}>
-                  <SelectTrigger className="w-full border rounded-md">
-                    <SelectValue placeholder="Select pattern" />
-                  </SelectTrigger>
-                  <SelectContent className="border-0 shadow-md rounded-md">
-                    {backgroundPatterns.map((pattern) => (
-                      <SelectItem key={pattern.id} value={pattern.id}>
-                        {pattern.label}
-                      </SelectItem>
+            <motion.div
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="space-y-2"
+            >
+              <div className="flex items-center gap-2">
+                <Paintbrush className="h-4 w-4 text-blue-500" />
+                <h4 className="text-sm font-medium">Background Color</h4>
+              </div>
+              <Card className="border shadow-sm bg-white/90 backdrop-blur-sm">
+                <CardContent className="p-3">
+                  <div className="grid grid-cols-4 gap-3">
+                    {backgroundColors.map((color) => (
+                      <button
+                        key={color.id}
+                        onClick={() => setSelectedColor(color.id)}
+                        className={`w-10 h-10 rounded-md transition-all hover:scale-105 ${
+                          selectedColor === color.id ? 'ring-2 ring-blue-500 scale-105' : 'ring-1 ring-gray-200'
+                        }`}
+                        style={{ backgroundColor: color.color }}
+                        title={color.label}
+                      />
                     ))}
-                  </SelectContent>
-                </Select>
-              </CardContent>
-            </Card>
-          </motion.div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 5 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="space-y-2"
-          >
-            <div className="flex items-center gap-2">
-              <Paintbrush className="h-4 w-4 text-blue-500" />
-              <h4 className="text-sm font-medium">Background Color</h4>
-            </div>
-            <Card className="border-0 shadow-sm bg-white/80 backdrop-blur-sm">
-              <CardContent className="p-3">
-                <div className="grid grid-cols-4 gap-3">
-                  {backgroundColors.map((color) => (
-                    <button
-                      key={color.id}
-                      onClick={() => setSelectedColor(color.id)}
-                      className={`w-10 h-10 rounded-md transition-all hover:scale-105 ${
-                        selectedColor === color.id ? 'ring-2 ring-blue-500 scale-105' : 'ring-1 ring-gray-200'
-                      }`}
-                      style={{ backgroundColor: color.color }}
-                      title={color.label}
-                    />
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </div>
+            <motion.div
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="space-y-2"
+            >
+              <div className="flex items-center gap-2">
+                <Code className="h-4 w-4 text-blue-500" />
+                <h4 className="text-sm font-medium">Code Block Theme</h4>
+              </div>
+              <Card className="border shadow-sm bg-white/90 backdrop-blur-sm">
+                <CardContent className="p-3">
+                  <Select value={selectedCodeTheme} onValueChange={setSelectedCodeTheme}>
+                    <SelectTrigger className="w-full border rounded-md">
+                      <SelectValue placeholder="Select code theme" />
+                    </SelectTrigger>
+                    <SelectContent className="border-0 shadow-md rounded-md">
+                      {codeBlockThemes.map((theme) => (
+                        <SelectItem key={theme.id} value={theme.id}>
+                          {theme.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <div className="mt-3 grid grid-cols-4 gap-3">
+                    {codeBlockThemes.map((theme) => (
+                      <button
+                        key={theme.id}
+                        onClick={() => setSelectedCodeTheme(theme.id)}
+                        className={`w-10 h-10 rounded-md transition-all hover:scale-105 ${
+                          selectedCodeTheme === theme.id ? 'ring-2 ring-blue-500 scale-105' : 'ring-1 ring-gray-200'
+                        }`}
+                        style={{ backgroundColor: theme.bgColor }}
+                        title={theme.label}
+                      >
+                        <div className="w-full h-2" style={{ backgroundColor: theme.lineNumberBg }}></div>
+                      </button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+        </ScrollArea>
       </SheetContent>
     </Sheet>
   );

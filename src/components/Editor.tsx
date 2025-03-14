@@ -7,7 +7,7 @@ import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
-import { backgroundPatterns, backgroundColors } from "@/lib/patterns";
+import { backgroundPatterns, backgroundColors, codeBlockThemes } from "@/lib/patterns";
 import { fontOptions } from "@/lib/fonts";
 import { processMarkdown } from "@/utils/markdownProcessor";
 import { Header } from "./editor/Header";
@@ -20,6 +20,7 @@ export default function Editor() {
   const [selectedFont, setSelectedFont] = useState("default");
   const [selectedPattern, setSelectedPattern] = useState("none");
   const [selectedColor, setSelectedColor] = useState("white");
+  const [selectedCodeTheme, setSelectedCodeTheme] = useState("light");
   const [zoom, setZoom] = useState(1);
   const [isEditorVisible, setIsEditorVisible] = useState(true);
   const [isSharedUrl, setIsSharedUrl] = useState(false);
@@ -40,6 +41,7 @@ export default function Editor() {
           setSelectedFont(parsedContent.font || "default");
           setSelectedPattern(parsedContent.pattern || "none");
           setSelectedColor(parsedContent.color || "white");
+          setSelectedCodeTheme(parsedContent.codeTheme || "light");
         } catch (jsonError) {
           // Fallback to old format (just markdown)
           setMarkdown(decodedContent);
@@ -95,7 +97,7 @@ export default function Editor() {
       const language = className?.replace(/language-/, '') || 'text';
       const code = String(children).replace(/\n$/, '');
       
-      return <CodeBlock language={language} code={code} />;
+      return <CodeBlock language={language} code={code} themeId={selectedCodeTheme} />;
     },
     // Add table renderer to ensure proper table formatting in PDFs
     table: ({ node, ...props }) => (
@@ -127,6 +129,8 @@ export default function Editor() {
         setSelectedPattern={setSelectedPattern}
         selectedColor={selectedColor}
         setSelectedColor={setSelectedColor}
+        selectedCodeTheme={selectedCodeTheme}
+        setSelectedCodeTheme={setSelectedCodeTheme}
         zoom={zoom}
       />
 
