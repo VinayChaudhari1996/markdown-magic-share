@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { motion, AnimatePresence } from "framer-motion";
+import { Card } from "@/components/ui/card";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
@@ -13,7 +14,6 @@ import { Header } from "./editor/Header";
 import { EyeOff, Eye } from "lucide-react";
 import { Button } from "./ui/button";
 import { CodeBlock } from "./editor/CodeBlock";
-import { SettingsPanel } from "./editor/SettingsPanel";
 
 export default function Editor() {
   const [markdown, setMarkdown] = useState("");
@@ -120,7 +120,7 @@ export default function Editor() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50">
+    <div className="flex flex-col min-h-screen bg-gray-50">
       <Header
         markdown={markdown}
         selectedFont={selectedFont}
@@ -134,24 +134,13 @@ export default function Editor() {
         zoom={zoom}
       />
 
-      <SettingsPanel
-        selectedFont={selectedFont}
-        setSelectedFont={setSelectedFont}
-        selectedPattern={selectedPattern}
-        setSelectedPattern={setSelectedPattern}
-        selectedColor={selectedColor}
-        setSelectedColor={setSelectedColor}
-        selectedCodeTheme={selectedCodeTheme}
-        setSelectedCodeTheme={setSelectedCodeTheme}
-      />
-
       <main className="flex-1 flex flex-col container mx-auto py-6 px-4">
         <div className="flex justify-end mb-2">
           <Button
             variant="outline"
             size="sm"
             onClick={toggleEditor}
-            className="rounded-md transition-all duration-300 border-slate-300 text-slate-700 hover:bg-slate-100"
+            className="rounded-full transition-all duration-300"
           >
             {isEditorVisible ? <EyeOff className="h-4 w-4 mr-2" /> : <Eye className="h-4 w-4 mr-2" />}
             {isEditorVisible ? "Hide Editor" : "Show Editor"}
@@ -160,17 +149,17 @@ export default function Editor() {
         
         <ResizablePanelGroup
           direction="horizontal"
-          className="flex-1 rounded-md border border-slate-200 shadow-sm overflow-hidden bg-white"
+          className="flex-1 rounded-lg border shadow-sm overflow-hidden bg-white"
         >
           {isEditorVisible && (
             <>
               <ResizablePanel defaultSize={40} minSize={30}>
-                <div className="h-full border-r border-slate-200">
+                <div className="h-full border-r">
                   <textarea
                     value={markdown}
                     onChange={(e) => setMarkdown(e.target.value)}
                     placeholder="Enter your markdown here... (Try some math: $E = mc^2$ or \[ E^2 = (mc^2)^2 + (pc)^2 \] or code blocks with ```language\ncode here\n```)"
-                    className="w-full h-full resize-none font-mono text-sm focus:outline-none p-6 placeholder:text-slate-400 bg-slate-50"
+                    className="w-full h-full resize-none font-mono text-sm focus:outline-none p-6 placeholder:text-gray-400"
                     style={{ 
                       fontFamily: "'SF Mono', 'JetBrains Mono', monospace",
                       lineHeight: '1.6',
@@ -181,7 +170,7 @@ export default function Editor() {
                 </div>
               </ResizablePanel>
 
-              <ResizableHandle withHandle className="bg-slate-100 hover:bg-slate-200" />
+              <ResizableHandle withHandle />
             </>
           )}
 

@@ -1,28 +1,28 @@
 
 export const backgroundPatterns = [
   { id: 'none', label: 'None', pattern: 'none' },
-  { id: 'dots', label: 'Dots', pattern: `radial-gradient(rgba(0,0,0,0.015) 1px, transparent 1px)` },
-  { id: 'grid', label: 'Grid', pattern: `linear-gradient(to right, rgba(0,0,0,0.01) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0,0,0,0.01) 1px, transparent 1px)` },
-  { id: 'diagonal', label: 'Diagonal', pattern: `repeating-linear-gradient(45deg, rgba(0,0,0,0.01) 0, rgba(0,0,0,0.01) 1px, transparent 0, transparent 50%)` },
-  { id: 'circles', label: 'Circles', pattern: `radial-gradient(circle at 50% 50%, rgba(0,0,0,0.01) 0%, rgba(0,0,0,0.01) 10%, transparent 10.5%)` },
-  { id: 'waves', label: 'Waves', pattern: `repeating-radial-gradient(rgba(0,0,0,0.005) 2px, transparent 5px, transparent 60px)` },
-  { id: 'hexagons', label: 'Hexagons', pattern: `radial-gradient(circle at 0% 50%, transparent 9px, rgba(0,0,0,0.008) 10px, rgba(0,0,0,0.008) 15px, transparent 16px), radial-gradient(circle at 50% 0%, transparent 9px, rgba(0,0,0,0.008) 10px, rgba(0,0,0,0.008) 15px, transparent 16px)` },
+  { id: 'dots', label: 'Dots', pattern: `radial-gradient(rgba(0,0,0,0.07) 1px, transparent 1px)` },
+  { id: 'grid', label: 'Grid', pattern: `linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px)` },
+  { id: 'diagonal', label: 'Diagonal', pattern: `repeating-linear-gradient(45deg, rgba(0,0,0,0.03) 0, rgba(0,0,0,0.03) 1px, transparent 0, transparent 50%)` },
+  { id: 'circles', label: 'Circles', pattern: `radial-gradient(circle at 50% 50%, rgba(0,0,0,0.03) 0%, rgba(0,0,0,0.03) 10%, transparent 10.5%)` },
+  { id: 'waves', label: 'Waves', pattern: `repeating-radial-gradient(rgba(0,0,0,0.02) 2px, transparent 5px, transparent 60px)` },
+  { id: 'hexagons', label: 'Hexagons', pattern: `radial-gradient(circle at 0% 50%, transparent 9px, rgba(0,0,0,0.02) 10px, rgba(0,0,0,0.02) 15px, transparent 16px), radial-gradient(circle at 50% 0%, transparent 9px, rgba(0,0,0,0.02) 10px, rgba(0,0,0,0.02) 15px, transparent 16px)` },
 ];
 
 export const backgroundColors = [
   { id: 'white', label: 'White', color: '#ffffff' },
-  { id: 'soft-gray', label: 'Soft Gray', color: '#F8F9FA' },
-  { id: 'light-blue', label: 'Light Blue', color: '#F0F7FF' },
-  { id: 'light-green', label: 'Light Green', color: '#F2FBF4' },
-  { id: 'light-purple', label: 'Light Purple', color: '#F6F4FF' },
-  { id: 'light-yellow', label: 'Light Yellow', color: '#FFFBEC' },
-  { id: 'light-pink', label: 'Light Pink', color: '#FFF5F7' },
-  { id: 'cream', label: 'Cream', color: '#FFFCF2' },
-  { id: 'mint', label: 'Mint', color: '#F1FBFA' },
-  { id: 'sky', label: 'Sky', color: '#F0F9FF' },
-  { id: 'lavender', label: 'Lavender', color: '#F3F1FF' },
-  { id: 'soft-peach', label: 'Soft Peach', color: '#FFF8F5' },
+  { id: 'soft-yellow', label: 'Soft Yellow', color: '#FEF7CD' },
+  { id: 'soft-blue', label: 'Soft Blue', color: '#D3E4FD' },
+  { id: 'soft-pink', label: 'Soft Pink', color: '#FFDEE2' },
+  { id: 'soft-green', label: 'Soft Green', color: '#F2FCE2' },
+  { id: 'soft-purple', label: 'Soft Purple', color: '#E5DEFF' },
+  { id: 'soft-peach', label: 'Soft Peach', color: '#FDE1D3' },
+  { id: 'soft-gray', label: 'Soft Gray', color: '#F1F0FB' },
+  { id: 'cream', label: 'Cream', color: '#FFF9E6' },
+  { id: 'mint', label: 'Mint', color: '#E0F5E9' },
+  { id: 'lavender', label: 'Lavender', color: '#F0E6FF' },
+  { id: 'sky', label: 'Sky', color: '#E6F7FF' },
 ];
 
 export const codeBlockThemes = [
