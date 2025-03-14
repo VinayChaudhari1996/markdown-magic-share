@@ -11,6 +11,7 @@ import { backgroundPatterns, backgroundColors, codeBlockThemes } from "@/lib/pat
 import { fontOptions } from "@/lib/fonts";
 import { processMarkdown } from "@/utils/markdownProcessor";
 import { Header } from "./editor/Header";
+import { FloatingStyleEditor } from "./editor/FloatingStyleEditor";
 import { EyeOff, Eye } from "lucide-react";
 import { Button } from "./ui/button";
 import { CodeBlock } from "./editor/CodeBlock";
@@ -204,6 +205,18 @@ export default function Editor() {
           </ResizablePanel>
         </ResizablePanelGroup>
       </main>
+
+      {/* Add the floating style editor */}
+      <FloatingStyleEditor
+        selectedFont={selectedFont}
+        setSelectedFont={setSelectedFont}
+        selectedPattern={selectedPattern}
+        setSelectedPattern={setSelectedPattern}
+        selectedColor={selectedColor}
+        setSelectedColor={setSelectedColor}
+        selectedCodeTheme={selectedCodeTheme}
+        setSelectedCodeTheme={setSelectedCodeTheme}
+      />
     </div>
   );
 }

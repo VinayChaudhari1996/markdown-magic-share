@@ -35,3 +35,11 @@ export const codeBlockThemes = [
   { id: 'soft-green', label: 'Soft Green', bgColor: '#f5fcf5', textColor: '#2c3e2e', borderColor: '#e3f6e3', lineNumberBg: '#edf7ed', lineNumberColor: '#8da28d' },
   { id: 'soft-purple', label: 'Soft Purple', bgColor: '#f9f5fc', textColor: '#3e2c50', borderColor: '#f0e3f6', lineNumberBg: '#f5edf7', lineNumberColor: '#a28db5' },
 ];
+
+// Define style categories for the floating menu
+export const styleCategories = [
+  { id: 'typography', label: 'Typography', icon: 'Type', color: '#4F46E5' },
+  { id: 'pattern', label: 'Pattern', icon: 'Grid3X3', color: '#6366F1' },
+  { id: 'color', label: 'Color', icon: 'Palette', color: '#8B5CF6' },
+  { id: 'code', label: 'Code', icon: 'Code', color: '#10B981' },
+];
