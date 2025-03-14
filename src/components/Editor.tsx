@@ -120,7 +120,7 @@ export default function Editor() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div className="flex flex-col min-h-screen bg-slate-50">
       <Header
         markdown={markdown}
         selectedFont={selectedFont}
@@ -151,7 +151,7 @@ export default function Editor() {
             variant="outline"
             size="sm"
             onClick={toggleEditor}
-            className="rounded-full transition-all duration-300"
+            className="rounded-md transition-all duration-300 border-slate-300 text-slate-700 hover:bg-slate-100"
           >
             {isEditorVisible ? <EyeOff className="h-4 w-4 mr-2" /> : <Eye className="h-4 w-4 mr-2" />}
             {isEditorVisible ? "Hide Editor" : "Show Editor"}
@@ -160,17 +160,17 @@ export default function Editor() {
         
         <ResizablePanelGroup
           direction="horizontal"
-          className="flex-1 rounded-lg border shadow-sm overflow-hidden bg-white"
+          className="flex-1 rounded-md border border-slate-200 shadow-sm overflow-hidden bg-white"
         >
           {isEditorVisible && (
             <>
               <ResizablePanel defaultSize={40} minSize={30}>
-                <div className="h-full border-r">
+                <div className="h-full border-r border-slate-200">
                   <textarea
                     value={markdown}
                     onChange={(e) => setMarkdown(e.target.value)}
                     placeholder="Enter your markdown here... (Try some math: $E = mc^2$ or \[ E^2 = (mc^2)^2 + (pc)^2 \] or code blocks with ```language\ncode here\n```)"
-                    className="w-full h-full resize-none font-mono text-sm focus:outline-none p-6 placeholder:text-gray-400"
+                    className="w-full h-full resize-none font-mono text-sm focus:outline-none p-6 placeholder:text-slate-400 bg-slate-50"
                     style={{ 
                       fontFamily: "'SF Mono', 'JetBrains Mono', monospace",
                       lineHeight: '1.6',
@@ -181,7 +181,7 @@ export default function Editor() {
                 </div>
               </ResizablePanel>
 
-              <ResizableHandle withHandle />
+              <ResizableHandle withHandle className="bg-slate-100 hover:bg-slate-200" />
             </>
           )}
 

@@ -53,6 +53,18 @@ export default {
           DEFAULT: "hsl(var(--code-bg))",
           foreground: "#1a1a1a",
         },
+        slate: {
+          50: "#f8f9fa",
+          100: "#f1f3f5",
+          200: "#e9ecef",
+          300: "#dee2e6",
+          400: "#ced4da",
+          500: "#adb5bd",
+          600: "#868e96",
+          700: "#495057",
+          800: "#343a40",
+          900: "#212529",
+        },
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],
@@ -62,6 +74,12 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      boxShadow: {
+        'sm': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+        DEFAULT: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+        'md': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+        'lg': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
       },
       keyframes: {
         "accordion-down": {
@@ -97,7 +115,7 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-        fadeIn: "fadeIn 0.5s ease-out forwards",
+        fadeIn: "fadeIn 0.3s ease-out forwards",
         slideIn: "slideIn 0.3s ease-out forwards",
         slideUp: "slideUp 0.3s ease-out forwards",
         float: "float 3s ease-in-out infinite",
@@ -108,12 +126,12 @@ export default {
           css: {
             pre: {
               backgroundColor: 'transparent',
-              borderRadius: theme('borderRadius.lg'),
+              borderRadius: theme('borderRadius.md'),
               padding: 0,
               margin: 0,
             },
             code: {
-              backgroundColor: theme('colors.gray.100'),
+              backgroundColor: theme('colors.slate.100'),
               borderRadius: theme('borderRadius.sm'),
               padding: '0.2em 0.4em',
               fontWeight: '500',
@@ -123,6 +141,38 @@ export default {
             },
             'code::after': {
               content: '""',
+            },
+            h1: {
+              color: theme('colors.slate.900'),
+              fontWeight: '700',
+            },
+            h2: {
+              color: theme('colors.slate.900'),
+              fontWeight: '600',
+            },
+            h3: {
+              color: theme('colors.slate.900'),
+              fontWeight: '600',
+            },
+            h4: {
+              color: theme('colors.slate.900'),
+              fontWeight: '600',
+            },
+            p: {
+              color: theme('colors.slate.700'),
+            },
+            a: {
+              color: theme('colors.blue.600'),
+            },
+            'ul > li::before': {
+              backgroundColor: theme('colors.slate.400'),
+            },
+            'ol > li::before': {
+              color: theme('colors.slate.500'),
+            },
+            blockquote: {
+              borderLeftColor: theme('colors.slate.200'),
+              color: theme('colors.slate.600'),
             },
           },
         },
