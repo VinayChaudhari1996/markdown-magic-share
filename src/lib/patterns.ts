@@ -1,13 +1,13 @@
 
 export const backgroundPatterns = [
   { id: 'none', label: 'None', pattern: 'none' },
-  { id: 'dots', label: 'Dots', pattern: `radial-gradient(rgba(0,0,0,0.07) 1px, transparent 1px)` },
-  { id: 'grid', label: 'Grid', pattern: `linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px)` },
-  { id: 'diagonal', label: 'Diagonal', pattern: `repeating-linear-gradient(45deg, rgba(0,0,0,0.03) 0, rgba(0,0,0,0.03) 1px, transparent 0, transparent 50%)` },
-  { id: 'circles', label: 'Circles', pattern: `radial-gradient(circle at 50% 50%, rgba(0,0,0,0.03) 0%, rgba(0,0,0,0.03) 10%, transparent 10.5%)` },
-  { id: 'waves', label: 'Waves', pattern: `repeating-radial-gradient(rgba(0,0,0,0.02) 2px, transparent 5px, transparent 60px)` },
-  { id: 'hexagons', label: 'Hexagons', pattern: `radial-gradient(circle at 0% 50%, transparent 9px, rgba(0,0,0,0.02) 10px, rgba(0,0,0,0.02) 15px, transparent 16px), radial-gradient(circle at 50% 0%, transparent 9px, rgba(0,0,0,0.02) 10px, rgba(0,0,0,0.02) 15px, transparent 16px)` },
+  { id: 'dots', label: 'Dots', pattern: `radial-gradient(rgba(0,0,0,0.03) 1px, transparent 1px)` },
+  { id: 'grid', label: 'Grid', pattern: `linear-gradient(to right, rgba(0,0,0,0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0,0,0,0.02) 1px, transparent 1px)` },
+  { id: 'diagonal', label: 'Diagonal', pattern: `repeating-linear-gradient(45deg, rgba(0,0,0,0.02) 0, rgba(0,0,0,0.02) 1px, transparent 0, transparent 50%)` },
+  { id: 'circles', label: 'Circles', pattern: `radial-gradient(circle at 50% 50%, rgba(0,0,0,0.02) 0%, rgba(0,0,0,0.02) 10%, transparent 10.5%)` },
+  { id: 'waves', label: 'Waves', pattern: `repeating-radial-gradient(rgba(0,0,0,0.01) 2px, transparent 5px, transparent 60px)` },
+  { id: 'hexagons', label: 'Hexagons', pattern: `radial-gradient(circle at 0% 50%, transparent 9px, rgba(0,0,0,0.01) 10px, rgba(0,0,0,0.01) 15px, transparent 16px), radial-gradient(circle at 50% 0%, transparent 9px, rgba(0,0,0,0.01) 10px, rgba(0,0,0,0.01) 15px, transparent 16px)` },
 ];
 
 export const backgroundColors = [

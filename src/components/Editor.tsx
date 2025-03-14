@@ -2,7 +2,6 @@
 import { useState, useEffect } from "react";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { motion, AnimatePresence } from "framer-motion";
-import { Card } from "@/components/ui/card";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
@@ -14,6 +13,7 @@ import { Header } from "./editor/Header";
 import { EyeOff, Eye } from "lucide-react";
 import { Button } from "./ui/button";
 import { CodeBlock } from "./editor/CodeBlock";
+import { SettingsPanel } from "./editor/SettingsPanel";
 
 export default function Editor() {
   const [markdown, setMarkdown] = useState("");
@@ -132,6 +132,17 @@ export default function Editor() {
         selectedCodeTheme={selectedCodeTheme}
         setSelectedCodeTheme={setSelectedCodeTheme}
         zoom={zoom}
+      />
+
+      <SettingsPanel
+        selectedFont={selectedFont}
+        setSelectedFont={setSelectedFont}
+        selectedPattern={selectedPattern}
+        setSelectedPattern={setSelectedPattern}
+        selectedColor={selectedColor}
+        setSelectedColor={setSelectedColor}
+        selectedCodeTheme={selectedCodeTheme}
+        setSelectedCodeTheme={setSelectedCodeTheme}
       />
 
       <main className="flex-1 flex flex-col container mx-auto py-6 px-4">
