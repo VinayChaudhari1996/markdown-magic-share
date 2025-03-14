@@ -269,9 +269,9 @@ export function SettingsPanel({
                               color: theme.textColor 
                             }}
                           >
-                            <div className="font-mono">function example() {</div>
+                            <div className="font-mono">function example() {'{'}</div>
                             <div className="font-mono ml-4">return true;</div>
-                            <div className="font-mono">}</div>
+                            <div className="font-mono">{'}'}</div>
                           </div>
                         </div>
                         <div className="p-2 text-xs font-medium bg-white border-t text-center">
