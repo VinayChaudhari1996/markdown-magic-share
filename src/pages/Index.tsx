@@ -1,8 +1,8 @@
 
-import Editor from "@/components/Editor";
+import MarkdownEditor from "@/components/MarkdownEditor";
 
 const Index = () => {
-  return <Editor />;
+  return <MarkdownEditor />;
 };
 
 export default Index;

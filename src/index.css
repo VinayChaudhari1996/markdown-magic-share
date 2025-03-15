@@ -1,16 +1,17 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 210 40% 98%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
+    --primary: 221 83% 53%;
     --primary-foreground: 210 40% 98%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -22,8 +23,8 @@
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-    --radius: 0.75rem;
+    --ring: 221 83% 53%;
+    --radius: 0.5rem;
     --code-bg: 220 14% 96%;
   }
 
@@ -35,28 +36,40 @@
     @apply bg-background text-foreground antialiased;
     background-image: radial-gradient(
       circle at 90% 10%,
-      rgba(225, 232, 255, 0.7) 0%,
-      rgba(245, 247, 255, 0.4) 50%,
-      rgba(245, 245, 255, 0) 100%
+      rgba(250, 250, 255, 0.6) 0%,
+      rgba(250, 251, 255, 0.3) 50%,
+      rgba(250, 250, 255, 0) 100%
     );
     background-attachment: fixed;
     background-size: cover;
   }
 
+  h1 {
+    @apply text-3xl font-bold leading-tight tracking-tight;
+  }
+
+  h2 {
+    @apply text-2xl font-semibold leading-tight;
+  }
+
+  h3 {
+    @apply text-xl font-medium leading-snug;
+  }
+
   .glass {
-    @apply bg-white/60 backdrop-blur-lg border border-white/20 shadow-lg;
+    @apply bg-white/80 backdrop-blur-sm border border-white/20 shadow-sm;
   }
   
   .card-gradient {
     background: linear-gradient(
       to bottom right,
-      rgba(255, 255, 255, 0.8),
-      rgba(245, 245, 255, 0.5)
+      rgba(255, 255, 255, 0.9),
+      rgba(250, 250, 255, 0.7)
     );
     backdrop-filter: blur(10px);
     box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.05);
   }
-  
+
   /* For ensuring PDF text is visible */
   .pdf-visible-text {
     color: #000000 !important;
@@ -105,8 +118,8 @@
 
   /* Code block styling - Light theme appearance */
   .markdown-code {
-    @apply relative my-4 rounded-xl overflow-hidden font-mono text-sm shadow-lg border border-gray-200 break-inside-avoid;
-    background-color: #f5f5f5;
+    @apply relative my-4 rounded-md overflow-hidden font-mono text-sm shadow-md border border-gray-200 break-inside-avoid;
+    background-color: white;
   }
 
   .markdown-code pre {
@@ -131,16 +144,16 @@
     word-break: break-word;
   }
 
-  /* Syntax highlighting - VS Code-like */
+  /* Syntax highlighting - Modern style */
   .token.comment,
   .token.prolog,
   .token.doctype,
   .token.cdata {
-    @apply text-gray-500;
+    @apply text-slate-500;
   }
 
   .token.punctuation {
-    @apply text-gray-400;
+    @apply text-slate-400;
   }
 
   .token.property,
@@ -149,7 +162,7 @@
   .token.number,
   .token.constant,
   .token.symbol {
-    @apply text-blue-400;
+    @apply text-blue-500;
   }
 
   .token.selector,
@@ -157,7 +170,7 @@
   .token.string,
   .token.char,
   .token.builtin {
-    @apply text-emerald-400;
+    @apply text-emerald-500;
   }
 
   .token.operator,
@@ -165,15 +178,15 @@
   .token.url,
   .language-css .token.string,
   .style .token.string {
-    @apply text-yellow-300;
+    @apply text-amber-500;
   }
 
   .token.keyword {
-    @apply text-purple-400 font-medium;
+    @apply text-purple-500 font-medium;
   }
 
   .token.function {
-    @apply text-yellow-200;
+    @apply text-amber-500;
   }
   
   .token.important,
@@ -191,12 +204,12 @@
   
   /* Variable highlighting */
   .token.variable {
-    @apply text-orange-300;
+    @apply text-orange-500;
   }
   
   /* Class name highlighting */
   .token.class-name {
-    @apply text-cyan-300;
+    @apply text-cyan-500;
   }
 }
 
@@ -258,4 +271,21 @@
   .stagger-fade-in > *:nth-child(3) { animation-delay: 0.3s; }
   .stagger-fade-in > *:nth-child(4) { animation-delay: 0.4s; }
   .stagger-fade-in > *:nth-child(5) { animation-delay: 0.5s; }
+  
+  /* Button styles */
+  .btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors duration-200;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-md transition-colors duration-200;
+  }
+  
+  .btn-outline {
+    @apply border border-gray-300 hover:border-gray-400 hover:bg-gray-50 px-4 py-2 rounded-md transition-all duration-200;
+  }
+  
+  .btn-icon {
+    @apply p-2 rounded-md hover:bg-gray-100 transition-colors duration-200;
+  }
 }

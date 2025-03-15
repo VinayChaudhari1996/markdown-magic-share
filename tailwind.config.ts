@@ -19,6 +19,11 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["Inter", "system-ui", "sans-serif"],
+        mono: ["JetBrains Mono", "monospace"],
+        heading: ["Inter", "system-ui", "sans-serif"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -53,10 +58,6 @@ export default {
           DEFAULT: "hsl(var(--code-bg))",
           foreground: "#1a1a1a",
         },
-      },
-      fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        mono: ["JetBrains Mono", "monospace"],
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -133,6 +134,35 @@ export default {
             },
             'code::after': {
               content: '""',
+            },
+            h1: {
+              fontWeight: '700',
+              fontSize: '2rem',
+              marginBottom: '1.5rem',
+              lineHeight: '1.2',
+            },
+            h2: {
+              fontWeight: '600',
+              fontSize: '1.5rem',
+              marginBottom: '1.25rem',
+              lineHeight: '1.3',
+            },
+            h3: {
+              fontWeight: '600',
+              fontSize: '1.25rem',
+              marginBottom: '1rem',
+              lineHeight: '1.4',
+            },
+            p: {
+              lineHeight: '1.6',
+              marginBottom: '1.25rem',
+            },
+            a: {
+              color: theme('colors.blue.600'),
+              textDecoration: 'none',
+              '&:hover': {
+                textDecoration: 'underline',
+              },
             },
           },
         },
