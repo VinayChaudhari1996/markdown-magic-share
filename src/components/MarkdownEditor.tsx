@@ -1,9 +1,7 @@
-
 import { useEffect, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { ResizablePanelGroup } from "react-resizable-panels";
-import { ResizableHandle, ResizablePanel } from "@/components/ui/resizable";
+import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { processMarkdown } from "@/utils/markdownProcessor";
 import { FloatingStyleEditor } from "./editor/FloatingStyleEditor";
