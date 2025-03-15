@@ -2,9 +2,9 @@
 import { useEffect, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Resizable } from "react-resizable-panels";
+import { ResizablePanelGroup } from "react-resizable-panels";
 import { ResizableHandle, ResizablePanel } from "@/components/ui/resizable";
-import { useMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { processMarkdown } from "@/utils/markdownProcessor";
 import { FloatingStyleEditor } from "./editor/FloatingStyleEditor";
 import { Header } from "./layout/Header";
@@ -49,7 +49,7 @@ export default function MarkdownEditor() {
   const [selectedColor, setSelectedColor] = useState("white");
   const [selectedCodeTheme, setSelectedCodeTheme] = useState("light");
   const [processedHtml, setProcessedHtml] = useState("");
-  const isMobile = useMobile();
+  const isMobile = useIsMobile();
   
   // Get font family from selection
   const fontFamily = fontOptions.find(font => font.value === selectedFont)?.family || "system-ui";
@@ -135,7 +135,7 @@ export default function MarkdownEditor() {
       ) : (
         <div className="flex-1 flex flex-col">
           <div className="flex-1 flex">
-            <Resizable>
+            <ResizablePanelGroup direction="horizontal">
               <ResizablePanel defaultSize={50} minSize={30}>
                 <div className="h-[calc(100vh-64px)] p-4">
                   <Textarea
@@ -164,7 +164,7 @@ export default function MarkdownEditor() {
                   />
                 </div>
               </ResizablePanel>
-            </Resizable>
+            </ResizablePanelGroup>
           </div>
         </div>
       )}
