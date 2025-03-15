@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Share2, Download, Menu } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
@@ -81,32 +82,67 @@ export function Header({
     });
 
     try {
+      // Create a deep clone of the element to modify for PDF export
       const clone = element.cloneNode(true) as HTMLElement;
       
+      // Set fixed width for more predictable PDF layout
       clone.style.width = '800px';
       clone.style.padding = '40px';
       clone.style.backgroundColor = '#ffffff';
-      clone.style.color = '#000000';
       
-      const allTextElements = clone.querySelectorAll('p, h1, h2, h3, h4, h5, h6, li, td, th, span');
+      // Ensure all text is visible in the PDF
+      const allTextElements = clone.querySelectorAll('p, h1, h2, h3, h4, h5, h6, li, td, th, span, a');
       allTextElements.forEach(el => {
         (el as HTMLElement).style.color = '#000000';
+        (el as HTMLElement).style.opacity = '1';
       });
       
+      // Prepare code blocks for PDF export
       const codeBlocks = clone.querySelectorAll('.markdown-code');
       codeBlocks.forEach(block => {
-        block.classList.add('pdf-code-block');
         (block as HTMLElement).style.pageBreakInside = 'avoid';
         (block as HTMLElement).style.breakInside = 'avoid';
-        (block as HTMLElement).style.marginBottom = '20px';
+        (block as HTMLElement).style.border = '1px solid #e2e8f0';
+        (block as HTMLElement).style.borderRadius = '8px';
+        (block as HTMLElement).style.margin = '16px 0';
         
-        const codeElements = block.querySelectorAll('code, .line');
-        codeElements.forEach(el => {
-          (el as HTMLElement).style.color = '#1a1a1a';
-          (el as HTMLElement).style.backgroundColor = '#f5f5f5';
+        // Ensure the header is visible
+        const header = block.querySelector('.flex.items-center.justify-between');
+        if (header) {
+          (header as HTMLElement).style.backgroundColor = '#f8fafc';
+          (header as HTMLElement).style.color = '#1e293b';
+          (header as HTMLElement).style.borderBottom = '1px solid #e2e8f0';
+        }
+        
+        // Set background for code content
+        const codeContent = block.querySelector('pre');
+        if (codeContent) {
+          (codeContent as HTMLElement).style.backgroundColor = '#f8fafc';
+          (codeContent as HTMLElement).style.color = '#1e293b';
+          (codeContent as HTMLElement).style.margin = '0';
+        }
+        
+        // Fix line numbers and code
+        const lineNumbers = block.querySelector('div.absolute.top-0.left-0.py-4');
+        if (lineNumbers) {
+          (lineNumbers as HTMLElement).style.backgroundColor = '#f1f5f9';
+          (lineNumbers as HTMLElement).style.color = '#64748b';
+        }
+        
+        // Style individual code lines
+        const codeLines = block.querySelectorAll('.line');
+        codeLines.forEach(line => {
+          (line as HTMLElement).style.color = '#1e293b';
         });
       });
       
+      // Process all math elements (KaTeX)
+      const mathElements = clone.querySelectorAll('.katex-display, .katex');
+      mathElements.forEach(el => {
+        (el as HTMLElement).style.color = '#000000';
+      });
+
+      // PDF generation options
       const opt = {
         margin: [15, 15, 15, 15],
         filename: 'markdown-document.pdf',
@@ -127,7 +163,8 @@ export function Header({
         pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
       };
 
-      await html2pdf().set(opt).from(clone).save();
+      // Convert the clone to PDF and save
+      await html2pdf().from(clone).set(opt).save();
       
       toast({
         title: "PDF Generated!",

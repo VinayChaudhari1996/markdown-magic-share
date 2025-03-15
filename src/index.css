@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -70,6 +71,26 @@
   }
 
   /* PDF Export Specific Styles */
+  @media print {
+    body * {
+      visibility: hidden;
+    }
+    #markdown-preview, #markdown-preview * {
+      visibility: visible;
+      color: #000 !important;
+    }
+    #markdown-preview {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      background: white !important;
+    }
+    .print\:hidden {
+      display: none !important;
+    }
+  }
+  
   .pdf-visible-text {
     color: #000000 !important;
     break-inside: auto !important;

@@ -50,6 +50,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
         borderColor: theme.borderColor,
         boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 5px 10px -5px rgba(0, 0, 0, 0.04)'
       }}
+      data-code-block="true"
     >
       {/* MacOS-like header with traffic light buttons and language badge */}
       <div 
@@ -75,7 +76,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
           variant="ghost" 
           size="sm" 
           onClick={copyToClipboard}
-          className="hover:bg-gray-200 transition-all duration-200"
+          className="hover:bg-gray-200 transition-all duration-200 print:hidden"
           style={{ color: theme.textColor }}
         >
           {copied ? (
@@ -130,7 +131,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
             {codeLines.map((line, i) => (
               <div 
                 key={i} 
-                className="line min-h-6 leading-6 hover:bg-gray-100/50"
+                className="line min-h-6 leading-6"
                 style={{ color: theme.textColor }}
               >
                 {line || ' '}

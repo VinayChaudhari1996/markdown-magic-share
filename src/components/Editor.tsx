@@ -102,21 +102,32 @@ export default function Editor() {
     },
     // Add table renderer to ensure proper table formatting in PDFs
     table: ({ node, ...props }) => (
-      <div className="my-4 overflow-hidden border rounded-lg pdf-table">
+      <div className="my-4 overflow-hidden border rounded-lg pdf-visible-text">
         <table className="min-w-full divide-y divide-gray-200" {...props} />
       </div>
     ),
     th: ({ node, ...props }) => (
       <th 
-        className="px-4 py-2 text-left text-sm font-medium text-gray-900 bg-gray-100" 
+        className="px-4 py-2 text-left text-sm font-medium text-gray-900 bg-gray-100 pdf-visible-text" 
         {...props} 
       />
     ),
     td: ({ node, ...props }) => (
       <td 
-        className="px-4 py-2 text-sm text-gray-900 border-t border-gray-200" 
+        className="px-4 py-2 text-sm text-gray-900 border-t border-gray-200 pdf-visible-text" 
         {...props} 
       />
+    ),
+    // Make math expressions visible in PDF
+    math: ({ value }) => (
+      <div className="pdf-visible-text" style={{ color: '#000000' }}>
+        {value}
+      </div>
+    ),
+    inlineMath: ({ value }) => (
+      <span className="pdf-visible-text" style={{ color: '#000000' }}>
+        {value}
+      </span>
     ),
   };
 
