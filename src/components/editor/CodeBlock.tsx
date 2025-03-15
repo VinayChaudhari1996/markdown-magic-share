@@ -51,10 +51,11 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
         boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 5px 10px -5px rgba(0, 0, 0, 0.04)'
       }}
       data-code-block="true"
+      data-pdf-codeblock="true"
     >
       {/* MacOS-like header with traffic light buttons and language badge */}
       <div 
-        className="flex items-center justify-between px-4 py-3 border-b relative"
+        className="flex items-center justify-between px-4 py-3 border-b relative pdf-header"
         style={{ borderColor: theme.borderColor, backgroundColor: theme.lineNumberBg }}
       >
         <div className="absolute left-4 flex items-center space-x-2">
@@ -66,7 +67,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
         <div className="mx-auto flex items-center gap-2">
           <TerminalSquare className="h-4 w-4 text-blue-500" />
           {displayLanguage && (
-            <span className="text-xs font-medium uppercase tracking-wide" style={{ color: theme.textColor }}>
+            <span className="text-xs font-medium uppercase tracking-wide pdf-language" style={{ color: theme.textColor }}>
               {displayLanguage}
             </span>
           )}
@@ -102,11 +103,11 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
       </div>
 
       {/* Code content with line numbers */}
-      <div className="pdf-code-block" style={{ backgroundColor: theme.bgColor, color: theme.textColor }}>
-        <pre className="py-4 relative">
+      <div className="pdf-code-block" style={{ backgroundColor: theme.bgColor }}>
+        <pre className="py-4 relative" data-pdf-code="true">
           {showLineNumbers && (
             <div 
-              className="absolute top-0 left-0 py-4 flex flex-col items-end border-r select-none"
+              className="absolute top-0 left-0 py-4 flex flex-col items-end border-r select-none pdf-line-numbers"
               style={{ 
                 width: `${lineNumberWidth}px`, 
                 backgroundColor: theme.lineNumberBg, 
@@ -115,24 +116,26 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
               }}
             >
               {codeLines.map((_, i) => (
-                <div key={`line-${i}`} className="px-2 min-h-6 leading-6 text-xs">
+                <div key={`line-${i}`} className="px-2 min-h-6 leading-6 text-xs pdf-line-number">
                   {i + 1}
                 </div>
               ))}
             </div>
           )}
           <code 
-            className="block pl-4 text-sm whitespace-pre-wrap break-words font-mono" 
+            className="block pl-4 text-sm whitespace-pre-wrap break-words font-mono pdf-code-text" 
             style={{ 
               paddingLeft: showLineNumbers ? `${lineNumberWidth + 16}px` : '16px',
               color: theme.textColor
             }}
+            data-pdf-code-text="true"
           >
             {codeLines.map((line, i) => (
               <div 
                 key={i} 
-                className="line min-h-6 leading-6"
+                className="line min-h-6 leading-6 pdf-code-line"
                 style={{ color: theme.textColor }}
+                data-pdf-line="true"
               >
                 {line || ' '}
               </div>

@@ -90,58 +90,51 @@ export function Header({
       clone.style.padding = '40px';
       clone.style.backgroundColor = '#ffffff';
       
-      // Ensure all text is visible in the PDF
-      const allTextElements = clone.querySelectorAll('p, h1, h2, h3, h4, h5, h6, li, td, th, span, a');
+      // Force all text to black for PDF visibility
+      const allTextElements = clone.querySelectorAll('p, h1, h2, h3, h4, h5, h6, li, td, th, pre, code, span, a, div');
       allTextElements.forEach(el => {
+        (el as HTMLElement).style.color = '#000000';
+        (el as HTMLElement).style.opacity = '1';
+        (el as HTMLElement).classList.add('pdf-text');
+      });
+      
+      // Process all math elements (KaTeX)
+      const mathElements = clone.querySelectorAll('.katex, .katex-display, .katex-html');
+      mathElements.forEach(el => {
         (el as HTMLElement).style.color = '#000000';
         (el as HTMLElement).style.opacity = '1';
       });
       
-      // Prepare code blocks for PDF export
-      const codeBlocks = clone.querySelectorAll('.markdown-code');
+      // Specially handle code blocks for PDF
+      const codeBlocks = clone.querySelectorAll('[data-code-block="true"]');
       codeBlocks.forEach(block => {
-        (block as HTMLElement).style.pageBreakInside = 'avoid';
         (block as HTMLElement).style.breakInside = 'avoid';
+        (block as HTMLElement).style.pageBreakInside = 'avoid';
         (block as HTMLElement).style.border = '1px solid #e2e8f0';
         (block as HTMLElement).style.borderRadius = '8px';
         (block as HTMLElement).style.margin = '16px 0';
+        (block as HTMLElement).style.overflow = 'hidden';
         
-        // Ensure the header is visible
-        const header = block.querySelector('.flex.items-center.justify-between');
-        if (header) {
-          (header as HTMLElement).style.backgroundColor = '#f8fafc';
-          (header as HTMLElement).style.color = '#1e293b';
-          (header as HTMLElement).style.borderBottom = '1px solid #e2e8f0';
-        }
+        // Make code block background light
+        const preElements = block.querySelectorAll('pre');
+        preElements.forEach(pre => {
+          (pre as HTMLElement).style.backgroundColor = '#f8fafc';
+          (pre as HTMLElement).style.margin = '0';
+          (pre as HTMLElement).style.padding = '16px';
+        });
         
-        // Set background for code content
-        const codeContent = block.querySelector('pre');
-        if (codeContent) {
-          (codeContent as HTMLElement).style.backgroundColor = '#f8fafc';
-          (codeContent as HTMLElement).style.color = '#1e293b';
-          (codeContent as HTMLElement).style.margin = '0';
-        }
-        
-        // Fix line numbers and code
-        const lineNumbers = block.querySelector('div.absolute.top-0.left-0.py-4');
-        if (lineNumbers) {
-          (lineNumbers as HTMLElement).style.backgroundColor = '#f1f5f9';
-          (lineNumbers as HTMLElement).style.color = '#64748b';
-        }
-        
-        // Style individual code lines
+        // Ensure code text is visible
         const codeLines = block.querySelectorAll('.line');
         codeLines.forEach(line => {
-          (line as HTMLElement).style.color = '#1e293b';
+          (line as HTMLElement).style.color = '#000000';
         });
+        
+        const codeElement = block.querySelector('code');
+        if (codeElement) {
+          (codeElement as HTMLElement).style.color = '#000000';
+        }
       });
       
-      // Process all math elements (KaTeX)
-      const mathElements = clone.querySelectorAll('.katex-display, .katex');
-      mathElements.forEach(el => {
-        (el as HTMLElement).style.color = '#000000';
-      });
-
       // PDF generation options
       const opt = {
         margin: [15, 15, 15, 15],
@@ -151,20 +144,28 @@ export function Header({
           scale: 2,
           useCORS: true,
           letterRendering: true,
-          logging: false,
+          logging: true,
           backgroundColor: '#ffffff'
         },
         jsPDF: { 
           unit: 'mm', 
           format: 'a4', 
           orientation: 'portrait',
-          compress: true
+          compressPDF: false
         },
         pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
       };
 
+      // Temporary add the clone to the document for PDF generation
+      clone.style.position = 'absolute';
+      clone.style.left = '-9999px';
+      document.body.appendChild(clone);
+
       // Convert the clone to PDF and save
       await html2pdf().from(clone).set(opt).save();
+      
+      // Remove the clone after PDF generation
+      document.body.removeChild(clone);
       
       toast({
         title: "PDF Generated!",

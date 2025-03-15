@@ -28,3 +28,35 @@ export const processMarkdown = (content: string) => {
 
   return processed;
 };
+
+// Add a new utility function to ensure text visibility in PDFs
+export const ensurePdfTextVisibility = (element: HTMLElement) => {
+  if (!element) return;
+  
+  // Force all text elements to have black color for PDF visibility
+  const textElements = element.querySelectorAll('p, h1, h2, h3, h4, h5, h6, li, span, a, td, th');
+  textElements.forEach(el => {
+    (el as HTMLElement).style.color = '#000000';
+  });
+  
+  // Handle code blocks specially
+  const codeBlocks = element.querySelectorAll('[data-code-block="true"]');
+  codeBlocks.forEach(block => {
+    // Set background color for code blocks
+    (block as HTMLElement).style.backgroundColor = '#f8fafc';
+    
+    // Ensure code text is black
+    const codeLines = block.querySelectorAll('.line');
+    codeLines.forEach(line => {
+      (line as HTMLElement).style.color = '#000000';
+    });
+  });
+  
+  // Process math elements
+  const mathElements = element.querySelectorAll('.katex, .katex-display');
+  mathElements.forEach(el => {
+    (el as HTMLElement).style.color = '#000000';
+  });
+  
+  return element;
+};
