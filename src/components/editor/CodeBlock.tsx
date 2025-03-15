@@ -47,15 +47,22 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
       style={{
         backgroundColor: theme.bgColor,
         color: theme.textColor,
-        borderColor: theme.borderColor
+        borderColor: theme.borderColor,
+        boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 5px 10px -5px rgba(0, 0, 0, 0.04)'
       }}
     >
-      {/* Header with language badge and copy button */}
+      {/* MacOS-like header with traffic light buttons and language badge */}
       <div 
-        className="flex items-center justify-between px-4 py-2 border-b"
+        className="flex items-center justify-between px-4 py-3 border-b relative"
         style={{ borderColor: theme.borderColor, backgroundColor: theme.lineNumberBg }}
       >
-        <div className="flex items-center gap-2">
+        <div className="absolute left-4 flex items-center space-x-2">
+          <div className="w-3 h-3 rounded-full bg-red-500 border border-red-600" />
+          <div className="w-3 h-3 rounded-full bg-yellow-500 border border-yellow-600" />
+          <div className="w-3 h-3 rounded-full bg-green-500 border border-green-600" />
+        </div>
+        
+        <div className="mx-auto flex items-center gap-2">
           <TerminalSquare className="h-4 w-4 text-blue-500" />
           {displayLanguage && (
             <span className="text-xs font-medium uppercase tracking-wide" style={{ color: theme.textColor }}>
@@ -63,6 +70,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
             </span>
           )}
         </div>
+        
         <Button 
           variant="ghost" 
           size="sm" 

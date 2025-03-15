@@ -45,7 +45,6 @@ export function Header({
 
   const handleShare = () => {
     try {
-      // Include all settings in the share URL
       const contentToEncode = JSON.stringify({
         markdown,
         font: selectedFont,
@@ -76,80 +75,59 @@ export function Header({
     const element = document.getElementById('markdown-preview');
     if (!element) return;
 
-    // Create a clone of the element to modify for PDF generation
-    const cloneElement = element.cloneNode(true) as HTMLElement;
-    
-    // Apply PDF-specific styling
-    cloneElement.classList.add('pdf-visible-text');
-    cloneElement.style.backgroundColor = '#ffffff';
-    
-    // Get current code theme for PDF export
-    const codeTheme = codeBlockThemes.find(theme => theme.id === selectedCodeTheme) || codeBlockThemes[0];
-    
-    // Find all code blocks and ensure they have PDF-specific class and styling
-    const codeBlocks = cloneElement.querySelectorAll('.markdown-code');
-    codeBlocks.forEach(block => {
-      block.classList.add('pdf-code-block');
-      (block as HTMLElement).style.backgroundColor = codeTheme.bgColor;
-      (block as HTMLElement).style.color = codeTheme.textColor;
-      (block as HTMLElement).style.borderColor = codeTheme.borderColor;
-      
-      // Style the code block header
-      const header = block.querySelector('.markdown-code > div:first-child') as HTMLElement;
-      if (header) {
-        header.style.backgroundColor = codeTheme.lineNumberBg;
-        header.style.borderColor = codeTheme.borderColor;
-      }
-      
-      // Style the line numbers
-      const lineNumbers = block.querySelector('.py-4 > div:first-child') as HTMLElement;
-      if (lineNumbers) {
-        lineNumbers.style.backgroundColor = codeTheme.lineNumberBg;
-        lineNumbers.style.color = codeTheme.lineNumberColor;
-        lineNumbers.style.borderColor = codeTheme.borderColor;
-      }
-      
-      // Style the code content
-      const codeContent = block.querySelectorAll('code, .line') as NodeListOf<HTMLElement>;
-      codeContent.forEach(element => {
-        element.style.color = codeTheme.textColor;
-      });
+    toast({
+      title: "Generating PDF...",
+      description: "Please wait while we prepare your document.",
     });
-    
-    // Set up PDF options with higher quality and better page breaks
-    const opt = {
-      margin: [20, 20, 20, 20],
-      filename: 'markdown-content.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { 
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#ffffff'
-      },
-      jsPDF: { 
-        unit: 'mm', 
-        format: 'a4', 
-        orientation: 'portrait',
-        compress: true
-      },
-      pagebreak: { 
-        mode: ['avoid-all', 'css', 'legacy'],
-        before: '.page-break-before',
-        after: '.page-break-after',
-        avoid: '.markdown-code'
-      }
-    };
 
     try {
-      // Show a loading toast
-      toast({
-        title: "Generating PDF...",
-        description: "Please wait while we prepare your document.",
+      const clone = element.cloneNode(true) as HTMLElement;
+      
+      clone.style.width = '800px';
+      clone.style.padding = '40px';
+      clone.style.backgroundColor = '#ffffff';
+      clone.style.color = '#000000';
+      
+      const allTextElements = clone.querySelectorAll('p, h1, h2, h3, h4, h5, h6, li, td, th, span');
+      allTextElements.forEach(el => {
+        (el as HTMLElement).style.color = '#000000';
       });
       
-      // Use the cloned element for PDF generation
-      await html2pdf().set(opt).from(cloneElement).save();
+      const codeBlocks = clone.querySelectorAll('.markdown-code');
+      codeBlocks.forEach(block => {
+        block.classList.add('pdf-code-block');
+        (block as HTMLElement).style.pageBreakInside = 'avoid';
+        (block as HTMLElement).style.breakInside = 'avoid';
+        (block as HTMLElement).style.marginBottom = '20px';
+        
+        const codeElements = block.querySelectorAll('code, .line');
+        codeElements.forEach(el => {
+          (el as HTMLElement).style.color = '#1a1a1a';
+          (el as HTMLElement).style.backgroundColor = '#f5f5f5';
+        });
+      });
+      
+      const opt = {
+        margin: [15, 15, 15, 15],
+        filename: 'markdown-document.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { 
+          scale: 2,
+          useCORS: true,
+          letterRendering: true,
+          logging: false,
+          backgroundColor: '#ffffff'
+        },
+        jsPDF: { 
+          unit: 'mm', 
+          format: 'a4', 
+          orientation: 'portrait',
+          compress: true
+        },
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+      };
+
+      await html2pdf().set(opt).from(clone).save();
       
       toast({
         title: "PDF Generated!",
@@ -173,7 +151,6 @@ export function Header({
             Markdown Magic
           </h1>
           
-          {/* Desktop Navigation */}
           <NavigationMenu className="hidden md:flex ml-6">
             <NavigationMenuList>
               <NavigationMenuItem>
@@ -224,7 +201,6 @@ export function Header({
           </NavigationMenu>
         </div>
         
-        {/* Settings for both mobile and desktop */}
         <div className="flex items-center gap-2">
           <SettingsPanel
             selectedFont={selectedFont}
@@ -237,7 +213,6 @@ export function Header({
             setSelectedCodeTheme={setSelectedCodeTheme}
           />
           
-          {/* Mobile menu button */}
           <Button 
             variant="outline" 
             size="icon" 
@@ -249,7 +224,6 @@ export function Header({
         </div>
       </div>
       
-      {/* Mobile menu */}
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-gray-200">
           <div className="flex flex-col space-y-1 p-3">
