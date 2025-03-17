@@ -38,7 +38,6 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
   // Get theme properties
   const theme = codeBlockThemes.find(theme => theme.id === themeId) || codeBlockThemes[0];
 
-  // Add console log for debugging
   console.log('Rendering CodeBlock with theme:', themeId, 'and language:', language);
 
   return (
@@ -61,6 +60,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
       <div 
         className="flex items-center justify-between px-4 py-3 border-b relative pdf-header"
         style={{ borderColor: theme.borderColor, backgroundColor: theme.lineNumberBg }}
+        data-pdf-header="true"
       >
         <div className="absolute left-4 flex items-center space-x-2">
           <div className="w-3 h-3 rounded-full bg-red-500 border border-red-600" />
@@ -71,7 +71,11 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
         <div className="mx-auto flex items-center gap-2">
           <TerminalSquare className="h-4 w-4 text-blue-500" />
           {displayLanguage && (
-            <span className="text-xs font-medium uppercase tracking-wide pdf-language" style={{ color: theme.textColor }}>
+            <span 
+              className="text-xs font-medium uppercase tracking-wide pdf-language" 
+              style={{ color: theme.textColor }}
+              data-pdf-language="true"
+            >
               {displayLanguage}
             </span>
           )}
@@ -107,8 +111,16 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
       </div>
 
       {/* Code content with line numbers */}
-      <div className="pdf-code-content" style={{ backgroundColor: theme.bgColor }}>
-        <pre className="py-4 relative" data-pdf-code="true">
+      <div 
+        className="pdf-code-content" 
+        style={{ backgroundColor: theme.bgColor }}
+        data-pdf-code-content="true"
+      >
+        <pre 
+          className="py-4 relative" 
+          data-pdf-code="true"
+          style={{ color: theme.textColor }}
+        >
           {showLineNumbers && (
             <div 
               className="absolute top-0 left-0 py-4 flex flex-col items-end border-r select-none pdf-line-numbers"
@@ -118,12 +130,14 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
                 color: theme.lineNumberColor,
                 borderColor: theme.borderColor
               }}
+              data-pdf-line-numbers="true"
             >
               {codeLines.map((_, i) => (
                 <div 
                   key={`line-${i}`} 
                   className="px-2 min-h-6 leading-6 text-xs pdf-line-number"
                   data-pdf-line-number="true"
+                  style={{ color: theme.lineNumberColor }}
                 >
                   {i + 1}
                 </div>
@@ -134,7 +148,8 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
             className="block pl-4 text-sm whitespace-pre-wrap break-words font-mono pdf-code-text" 
             style={{ 
               paddingLeft: showLineNumbers ? `${lineNumberWidth + 16}px` : '16px',
-              color: theme.textColor
+              color: theme.textColor,
+              fontFamily: "monospace"
             }}
             data-pdf-code-text="true"
           >
