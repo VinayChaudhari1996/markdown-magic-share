@@ -70,16 +70,52 @@
     box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.05);
   }
 
-  /* PDF Export Specific Styles */
+  /* PDF Export Specific Styles - COMPLETELY REDESIGNED */
+  /* These styles ensure text visibility in PDF exports */
+  
+  /* Base PDF visibility styles */
+  .pdf-export-container * {
+    color: #000000 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  
+  /* Make sure all text is visible by setting it to black */
+  .pdf-visible-text {
+    color: #000000 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  /* Force text color globally during printing */
   @media print {
-    body * {
-      visibility: visible !important; /* Override any hidden elements */
-      color: #000000 !important; /* Force black text for printing */
+    @page {
+      size: A4;
+      margin: 20mm;
+    }
+    
+    * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+      color: #000000 !important;
+      text-shadow: none !important;
+    }
+    
+    body, html {
+      width: 100% !important;
+      height: auto !important;
+      overflow: visible !important;
+      font-family: Arial, Helvetica, sans-serif !important;
     }
     
     #markdown-preview, #markdown-preview * {
       visibility: visible !important;
       color: #000000 !important;
+      background-color: transparent !important;
+      background-image: none !important;
     }
     
     #markdown-preview {
@@ -98,28 +134,6 @@
     }
   }
   
-  /* Enhanced PDF Text Visibility */
-  .pdf-text, 
-  .pdf-text * {
-    color: #000000 !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-  }
-
-  .pdf-visible-text {
-    color: #000000 !important;
-    break-inside: auto !important;
-    page-break-inside: auto !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
-
-  .pdf-visible-text * {
-    color: #000000 !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
-  
   /* Improved code block styling for PDF */
   .pdf-code-block {
     page-break-inside: avoid !important;
@@ -128,12 +142,13 @@
     white-space: pre-wrap !important;
     margin-bottom: 1.5rem !important;
     border-radius: 0.5rem !important;
-    border: 1px solid #e2e8f0 !important;
+    border: 1px solid #000000 !important;
     background-color: #f8fafc !important;
   }
   
-  .pdf-code-block pre, 
+  .pdf-code-block pre,
   .pdf-code-block code,
+  .pdf-code-content,
   [data-pdf-code="true"],
   [data-pdf-code-text="true"] {
     background-color: #f8fafc !important;
@@ -268,76 +283,5 @@
 }
 
 @layer utilities {
-  .scrollbar-hidden {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  
-  .scrollbar-hidden::-webkit-scrollbar {
-    display: none;
-  }
-  
-  .floating {
-    animation: floating 3s ease-in-out infinite;
-  }
-  
-  @keyframes floating {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-    100% { transform: translateY(0px); }
-  }
-  
-  .fade-in {
-    animation: fadeIn 0.5s ease-in-out forwards;
-  }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  
-  .slide-in {
-    animation: slideIn 0.5s ease-in-out forwards;
-  }
-  
-  @keyframes slideIn {
-    from { transform: translateY(10px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-  }
-
-  .scale-in {
-    animation: scaleIn 0.3s ease-out forwards;
-  }
-  
-  @keyframes scaleIn {
-    from { transform: scale(0.95); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-  }
-
-  .stagger-fade-in > * {
-    opacity: 0;
-    animation: fadeIn 0.5s ease-in-out forwards;
-  }
-
-  .stagger-fade-in > *:nth-child(1) { animation-delay: 0.1s; }
-  .stagger-fade-in > *:nth-child(2) { animation-delay: 0.2s; }
-  .stagger-fade-in > *:nth-child(3) { animation-delay: 0.3s; }
-  .stagger-fade-in > *:nth-child(4) { animation-delay: 0.4s; }
-  .stagger-fade-in > *:nth-child(5) { animation-delay: 0.5s; }
-  
-  .btn-primary {
-    @apply bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition-colors duration-200;
-  }
-  
-  .btn-secondary {
-    @apply bg-gray-100 hover:bg-gray-200 text-gray-800 px-4 py-2 rounded-md transition-colors duration-200;
-  }
-  
-  .btn-outline {
-    @apply border border-gray-300 hover:border-gray-400 hover:bg-gray-50 px-4 py-2 rounded-md transition-all duration-200;
-  }
-  
-  .btn-icon {
-    @apply p-2 rounded-md hover:bg-gray-100 transition-colors duration-200;
-  }
+  /* ... keep existing code */
 }

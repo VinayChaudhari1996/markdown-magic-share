@@ -30,129 +30,127 @@ export const processMarkdown = (content: string) => {
 };
 
 /**
- * Ensures text visibility when exporting to PDF
- * This is a crucial function to make sure all text is visible in the PDF
- */
-export const ensurePdfTextVisibility = (element: HTMLElement) => {
-  if (!element) return;
-  
-  // Force all elements to have black color for PDF visibility
-  const allElements = element.querySelectorAll('*');
-  allElements.forEach(el => {
-    if (el instanceof HTMLElement) {
-      // Ensure visibility
-      el.style.color = '#000000';
-      el.style.opacity = '1';
-      el.style.visibility = 'visible';
-      
-      // Add a CSS class for PDF visibility
-      el.classList.add('pdf-text');
-      
-      // Set text-rendering for better quality
-      el.style.textRendering = 'optimizeLegibility';
-      
-      // Ensure non-transparent background for text elements
-      if (
-        el.tagName === 'P' || 
-        el.tagName.match(/^H[1-6]$/) || 
-        el.tagName === 'LI' || 
-        el.tagName === 'SPAN' ||
-        el.tagName === 'A'
-      ) {
-        // Only apply background to text elements
-        el.style.backgroundColor = 'transparent';
-        el.style.textShadow = 'none';
-      }
-    }
-  });
-  
-  // Special handling for code blocks
-  const codeBlocks = element.querySelectorAll('[data-code-block="true"]');
-  codeBlocks.forEach(block => {
-    if (block instanceof HTMLElement) {
-      // Ensure code blocks have visible background and border for PDF
-      block.style.backgroundColor = '#f8fafc';
-      block.style.border = '1px solid #e2e8f0';
-      block.style.borderRadius = '8px';
-      block.style.overflow = 'hidden';
-      block.style.pageBreakInside = 'avoid';
-      block.style.breakInside = 'avoid';
-      
-      // Ensure code block header is visible
-      const header = block.querySelector('.pdf-header');
-      if (header instanceof HTMLElement) {
-        header.style.borderBottom = '1px solid #e2e8f0';
-        header.style.backgroundColor = '#f1f5f9';
-        
-        // Ensure language badge is visible
-        const language = header.querySelector('.pdf-language');
-        if (language instanceof HTMLElement) {
-          language.style.color = '#000000';
-          language.style.fontWeight = 'bold';
-        }
-      }
-      
-      // Process all code lines
-      const codeLines = block.querySelectorAll('.line, [data-pdf-line="true"]');
-      codeLines.forEach(line => {
-        if (line instanceof HTMLElement) {
-          line.style.color = '#000000';
-          line.style.backgroundColor = 'transparent';
-          line.style.display = 'block';
-          line.style.whiteSpace = 'pre-wrap';
-        }
-      });
-      
-      // Ensure line numbers are visible
-      const lineNumbers = block.querySelectorAll('.pdf-line-number');
-      lineNumbers.forEach(num => {
-        if (num instanceof HTMLElement) {
-          num.style.color = '#64748b';
-          num.style.backgroundColor = '#f1f5f9';
-        }
-      });
-    }
-  });
-  
-  // Special handling for math elements
-  const mathElements = element.querySelectorAll('.katex, .katex-display, .katex-html');
-  mathElements.forEach(math => {
-    if (math instanceof HTMLElement) {
-      math.style.color = '#000000';
-      
-      // Process all math sub-elements to ensure they're black
-      const mathSubElements = math.querySelectorAll('*');
-      mathSubElements.forEach(el => {
-        if (el instanceof HTMLElement) {
-          el.style.color = '#000000';
-        }
-      });
-    }
-  });
-  
-  return element;
-};
-
-/**
- * Creates a deep clone of an element optimized for PDF export
+ * Creates a deep clone optimized for PDF export
+ * This is crucial for ensuring elements are visible in exported PDFs
  */
 export const createPdfExportClone = (element: HTMLElement) => {
-  if (!element) return null;
-  
+  console.log('Creating PDF export clone');
+  if (!element) {
+    console.error('Element not found for PDF export');
+    return null;
+  }
+
   // Create a deep clone of the element
   const clone = element.cloneNode(true) as HTMLElement;
   
-  // Set optimal PDF export styles
+  // Add a specific class for PDF export
+  clone.classList.add('pdf-export-container');
+  
+  // Force important style properties for PDF export
   clone.style.width = '800px';
-  clone.style.padding = '40px';
   clone.style.backgroundColor = '#ffffff';
-  clone.style.position = 'relative';
-  clone.style.fontFamily = 'system-ui, -apple-system, sans-serif';
-  clone.style.lineHeight = '1.5';
   clone.style.color = '#000000';
+  clone.style.fontFamily = 'Arial, Helvetica, sans-serif';
+  clone.style.fontSize = '12pt';
+  clone.style.lineHeight = '1.5';
+  clone.style.letterSpacing = 'normal';
+  clone.style.fontWeight = 'normal';
+  clone.style.padding = '40px';
+  clone.style.position = 'absolute';
+  clone.style.left = '-9999px';
+  clone.style.top = '0';
   
-  // Apply visibility enhancement
-  ensurePdfTextVisibility(clone);
+  // Apply force visibility to all elements in the clone
+  forcePdfVisibility(clone);
   
+  console.log('PDF clone created and optimized');
   return clone;
+};
+
+/**
+ * Force all elements to be visible in PDF export
+ * This is a critical function that ensures text appears in the PDF
+ */
+export const forcePdfVisibility = (element: HTMLElement) => {
+  console.log('Forcing PDF visibility on elements');
+  
+  if (!element) {
+    console.error('No element provided to forcePdfVisibility');
+    return;
+  }
+  
+  // CRITICAL: Ensure ALL elements have black text and are visible
+  const allElements = element.querySelectorAll('*');
+  console.log(`Processing ${allElements.length} elements for PDF visibility`);
+  
+  allElements.forEach((el, index) => {
+    if (el instanceof HTMLElement) {
+      // Override ALL text colors to black
+      el.style.setProperty('color', '#000000', 'important');
+      el.style.setProperty('fill', '#000000', 'important');
+      el.style.setProperty('visibility', 'visible', 'important');
+      el.style.setProperty('opacity', '1', 'important');
+      el.style.setProperty('display', el.style.display === 'none' ? 'block' : el.style.display, 'important');
+      
+      // Add a data attribute to track processed elements
+      el.setAttribute('data-pdf-processed', 'true');
+      
+      // Log every 100 elements to avoid console flood
+      if (index % 100 === 0) {
+        console.log(`Processed ${index} elements for PDF visibility`);
+      }
+    }
+  });
+  
+  // Special handling for text elements
+  const textElements = element.querySelectorAll('p, h1, h2, h3, h4, h5, h6, li, span, a, td, th');
+  textElements.forEach(el => {
+    if (el instanceof HTMLElement) {
+      el.classList.add('pdf-visible-text');
+      el.style.setProperty('color', '#000000', 'important');
+      el.style.setProperty('text-shadow', 'none', 'important');
+      el.style.setProperty('background-color', 'transparent', 'important');
+      el.style.setProperty('-webkit-text-fill-color', '#000000', 'important');
+    }
+  });
+
+  // Special handling for code blocks
+  const codeBlocks = element.querySelectorAll('pre, code, [data-code-block="true"], .code-block');
+  console.log(`Found ${codeBlocks.length} code blocks to process`);
+  
+  codeBlocks.forEach(block => {
+    if (block instanceof HTMLElement) {
+      block.classList.add('pdf-code-block');
+      block.style.setProperty('background-color', '#f8fafc', 'important');
+      block.style.setProperty('border', '1px solid #e2e8f0', 'important');
+      block.style.setProperty('page-break-inside', 'avoid', 'important');
+      block.style.setProperty('break-inside', 'avoid', 'important');
+      
+      // Process all code lines inside this block
+      const codeLines = block.querySelectorAll('.line');
+      codeLines.forEach(line => {
+        if (line instanceof HTMLElement) {
+          line.style.setProperty('color', '#000000', 'important');
+          line.style.setProperty('white-space', 'pre-wrap', 'important');
+        }
+      });
+    }
+  });
+  
+  // Handle math expressions (KaTeX elements)
+  const mathElements = element.querySelectorAll('.katex, .katex-display, .katex-html');
+  mathElements.forEach(math => {
+    if (math instanceof HTMLElement) {
+      math.style.setProperty('color', '#000000', 'important');
+      const mathParts = math.querySelectorAll('*');
+      mathParts.forEach(part => {
+        if (part instanceof HTMLElement) {
+          part.style.setProperty('color', '#000000', 'important');
+        }
+      });
+    }
+  });
+  
+  console.log('PDF visibility enforcement complete');
+  return element;
 };

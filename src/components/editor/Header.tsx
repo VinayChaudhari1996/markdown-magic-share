@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Share2, Download, Menu } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
@@ -6,7 +7,7 @@ import { SettingsPanel } from "./SettingsPanel";
 import { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { codeBlockThemes } from "@/lib/patterns";
-import { createPdfExportClone } from "@/utils/markdownProcessor";
+import { createPdfExportClone, forcePdfVisibility } from "@/utils/markdownProcessor";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -76,6 +77,7 @@ export function Header({
   const handleDownload = async () => {
     const element = document.getElementById('markdown-preview');
     if (!element) {
+      console.error('Markdown preview element not found for PDF export');
       toast({
         title: "Error",
         description: "Couldn't find the markdown content to export.",
@@ -91,24 +93,41 @@ export function Header({
     });
 
     try {
-      const clone = createPdfExportClone(element);
-      if (!clone) throw new Error("Failed to create export clone");
+      console.log('Starting PDF export process');
       
-      clone.style.position = 'absolute';
-      clone.style.left = '-9999px';
-      clone.style.top = '0';
-      clone.style.zIndex = '-1000';
+      // Create an optimized clone specifically for PDF export
+      const clone = createPdfExportClone(element);
+      if (!clone) {
+        throw new Error("Failed to create export clone");
+      }
+      
+      // Add to document body temporarily for html2pdf to process it
       document.body.appendChild(clone);
       
+      // Log the clone structure to check if text is present
+      console.log('Clone created with structure:', {
+        childNodes: clone.childNodes.length,
+        textContent: clone.textContent?.substring(0, 100) + '...',
+        hasStyles: !!clone.style.cssText
+      });
+      
+      // Wait a moment for styles to apply
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      // Configure html2pdf with optimal settings for text visibility
       const opt = {
         margin: [15, 15, 15, 15],
         filename: 'markdown-document.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
+        image: { 
+          type: 'jpeg', 
+          quality: 1.0 
+        },
+        enableLinks: true,
         html2canvas: { 
           scale: 2,
           useCORS: true,
           letterRendering: true,
-          logging: false,
+          logging: true,
           backgroundColor: '#ffffff',
           removeContainer: false,
           foreignObjectRendering: false,
@@ -128,11 +147,14 @@ export function Header({
           avoid: '.page-break-avoid',
         }
       };
+      
+      console.log('PDF export configuration:', opt);
 
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
+      // Generate and download the PDF
       await html2pdf().from(clone).set(opt).save();
+      console.log('PDF generation completed');
       
+      // Clean up the temporary clone
       document.body.removeChild(clone);
       
       toast({

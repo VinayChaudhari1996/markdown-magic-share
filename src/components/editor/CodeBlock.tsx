@@ -38,6 +38,9 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
   // Get theme properties
   const theme = codeBlockThemes.find(theme => theme.id === themeId) || codeBlockThemes[0];
 
+  // Add console log for debugging
+  console.log('Rendering CodeBlock with theme:', themeId, 'and language:', language);
+
   return (
     <motion.div 
       className="markdown-code group rounded-xl overflow-hidden break-inside-avoid mb-6 pdf-code-block"
@@ -52,6 +55,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
       }}
       data-code-block="true"
       data-pdf-codeblock="true"
+      data-language={language}
     >
       {/* MacOS-like header with traffic light buttons and language badge */}
       <div 
@@ -103,7 +107,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
       </div>
 
       {/* Code content with line numbers */}
-      <div className="pdf-code-block" style={{ backgroundColor: theme.bgColor }}>
+      <div className="pdf-code-content" style={{ backgroundColor: theme.bgColor }}>
         <pre className="py-4 relative" data-pdf-code="true">
           {showLineNumbers && (
             <div 
@@ -116,7 +120,11 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
               }}
             >
               {codeLines.map((_, i) => (
-                <div key={`line-${i}`} className="px-2 min-h-6 leading-6 text-xs pdf-line-number">
+                <div 
+                  key={`line-${i}`} 
+                  className="px-2 min-h-6 leading-6 text-xs pdf-line-number"
+                  data-pdf-line-number="true"
+                >
                   {i + 1}
                 </div>
               ))}
@@ -136,6 +144,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
                 className="line min-h-6 leading-6 pdf-code-line"
                 style={{ color: theme.textColor }}
                 data-pdf-line="true"
+                data-line-number={i + 1}
               >
                 {line || ' '}
               </div>
