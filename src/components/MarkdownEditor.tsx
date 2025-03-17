@@ -15,6 +15,8 @@ import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 import { CodeBlock } from "./editor/CodeBlock";
 import { motion } from "framer-motion";
+import { Button } from "./ui/button";
+import { EyeOff, Eye } from "lucide-react";
 
 // Default markdown content
 const defaultMarkdown = `# Welcome to Markdown Magic
@@ -55,6 +57,7 @@ export default function MarkdownEditor() {
   const [selectedCodeTheme, setSelectedCodeTheme] = useState("light");
   const [zoom, setZoom] = useState(1);
   const [isFloatingMenuOpen, setIsFloatingMenuOpen] = useState(false);
+  const [isEditorVisible, setIsEditorVisible] = useState(true);
   const isMobile = useIsMobile();
   
   // Get font family from selection
@@ -85,6 +88,10 @@ export default function MarkdownEditor() {
       }
     }
   }, []);
+
+  const toggleEditor = () => {
+    setIsEditorVisible(!isEditorVisible);
+  };
 
   // Component for the markdown renderers
   const renderers = {
@@ -166,28 +173,44 @@ export default function MarkdownEditor() {
         </div>
       ) : (
         <div className="flex-1 flex flex-col container mx-auto py-6 px-4">
+          <div className="flex justify-end mb-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={toggleEditor}
+              className="rounded-full transition-all duration-300"
+            >
+              {isEditorVisible ? <EyeOff className="h-4 w-4 mr-2" /> : <Eye className="h-4 w-4 mr-2" />}
+              {isEditorVisible ? "Hide Editor" : "Show Editor"}
+            </Button>
+          </div>
+          
           <div className="flex-1 flex rounded-lg overflow-hidden border shadow-sm bg-white">
             <ResizablePanelGroup direction="horizontal" className="w-full min-h-[calc(100vh-120px)]">
-              <ResizablePanel defaultSize={50} minSize={30} className="border-r">
-                <div className="h-full">
-                  <Textarea
-                    value={markdown}
-                    onChange={(e) => setMarkdown(e.target.value)}
-                    className="h-full p-6 font-mono text-sm resize-none rounded-none border-0 shadow-none focus-visible:ring-0"
-                    placeholder="Type your markdown here..."
-                    style={{ 
-                      fontFamily: "'SF Mono', 'JetBrains Mono', monospace",
-                      lineHeight: '1.6',
-                      letterSpacing: '0.3px'
-                    }}
-                    spellCheck={false}
-                  />
-                </div>
-              </ResizablePanel>
+              {isEditorVisible && (
+                <>
+                  <ResizablePanel defaultSize={50} minSize={30} className="border-r">
+                    <div className="h-full">
+                      <Textarea
+                        value={markdown}
+                        onChange={(e) => setMarkdown(e.target.value)}
+                        className="h-full p-6 font-mono text-sm resize-none rounded-none border-0 shadow-none focus-visible:ring-0"
+                        placeholder="Type your markdown here..."
+                        style={{ 
+                          fontFamily: "'SF Mono', 'JetBrains Mono', monospace",
+                          lineHeight: '1.6',
+                          letterSpacing: '0.3px'
+                        }}
+                        spellCheck={false}
+                      />
+                    </div>
+                  </ResizablePanel>
+                  
+                  <ResizableHandle withHandle className="bg-gray-100" />
+                </>
+              )}
               
-              <ResizableHandle withHandle className="bg-gray-100" />
-              
-              <ResizablePanel defaultSize={50} minSize={30}>
+              <ResizablePanel defaultSize={isEditorVisible ? 50 : 100} minSize={30}>
                 <div className="h-full overflow-auto">
                   <motion.div
                     id="markdown-preview"

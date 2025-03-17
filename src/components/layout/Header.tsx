@@ -1,12 +1,10 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Download, Share, Github, Sparkles } from "lucide-react";
+import { Share, Github, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import html2pdf from "html2pdf.js";
 
 interface HeaderProps {
   markdown: string;
@@ -74,58 +72,6 @@ export function Header({
     }
   };
 
-  const exportAsPdf = async () => {
-    try {
-      // Clone the preview element to avoid modifying the original
-      const previewElement = document.getElementById("markdown-preview");
-      if (!previewElement) {
-        throw new Error("Preview element not found");
-      }
-      
-      const clonedElement = previewElement.cloneNode(true) as HTMLElement;
-      
-      // Reset any transform (zoom) on the clone
-      clonedElement.style.transform = "none";
-      
-      // Apply a clean style suited for PDF
-      clonedElement.style.padding = "20px";
-      clonedElement.style.margin = "0";
-      clonedElement.style.width = "100%";
-      clonedElement.style.backgroundColor = "white";
-      
-      // Make the cloned element invisible and append to document temporarily
-      clonedElement.style.position = "absolute";
-      clonedElement.style.left = "-9999px";
-      document.body.appendChild(clonedElement);
-      
-      // Generate PDF
-      const opt = {
-        margin: [10, 10, 10, 10],
-        filename: "markdown-document.pdf",
-        image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, logging: false },
-        jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
-      };
-      
-      await html2pdf().from(clonedElement).set(opt).save();
-      
-      // Clean up
-      document.body.removeChild(clonedElement);
-      
-      toast({
-        title: "PDF Exported",
-        description: "Your document has been exported as a PDF.",
-      });
-    } catch (error) {
-      console.error("PDF export error:", error);
-      toast({
-        title: "Export Failed",
-        description: "Could not export document as PDF.",
-        variant: "destructive"
-      });
-    }
-  };
-
   return (
     <header className="bg-white border-b sticky top-0 z-10 shadow-sm">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
@@ -148,21 +94,6 @@ export function Header({
         </div>
         
         <div className="flex items-center gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="hidden sm:flex">
-                <Download className="h-4 w-4 mr-2" />
-                Export
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-40">
-              <DropdownMenuItem onClick={exportAsPdf}>
-                <Download className="h-4 w-4 mr-2" />
-                PDF
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          
           <Button variant="ghost" size="sm" onClick={handleShare}>
             <Share className="h-4 w-4 sm:mr-2" />
             <span className="hidden sm:inline">Share</span>

@@ -1,10 +1,10 @@
+
 import { Button } from "@/components/ui/button";
-import { Share2, Download, Menu } from "lucide-react";
+import { Share2, Menu } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { SettingsPanel } from "./SettingsPanel";
 import { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { exportToPdf } from "@/utils/pdfExport";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -41,7 +41,6 @@ export function Header({
 }: HeaderProps) {
   const { toast } = useToast();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isExporting, setIsExporting] = useState(false);
 
   const handleShare = () => {
     try {
@@ -71,41 +70,6 @@ export function Header({
     }
   };
 
-  const handleDownload = async () => {
-    if (isExporting) return;
-    
-    setIsExporting(true);
-    toast({
-      title: "Generating PDF...",
-      description: "Please wait while we prepare your document.",
-    });
-
-    try {
-      console.log("Starting PDF export process");
-      
-      // Use our new PDF export utility
-      const success = await exportToPdf("markdown-preview", "markdown-document.pdf");
-      
-      if (success) {
-        toast({
-          title: "PDF Generated!",
-          description: "Your markdown content has been downloaded as PDF.",
-        });
-      } else {
-        throw new Error("PDF generation failed");
-      }
-    } catch (error) {
-      console.error("PDF generation error:", error);
-      toast({
-        title: "Error",
-        description: "Failed to generate PDF. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsExporting(false);
-    }
-  };
-
   return (
     <header className="sticky top-0 z-50 w-full bg-white/90 backdrop-blur-md border-b shadow-sm">
       <div className="container flex h-16 items-center justify-between">
@@ -126,7 +90,7 @@ export function Header({
                       <h4 className="font-medium leading-none">About Markdown Magic</h4>
                       <p className="text-sm text-muted-foreground">
                         Create beautiful markdown documents and share them with others.
-                        Supports LaTeX, code highlighting, and PDF export.
+                        Supports LaTeX, code highlighting, and beautiful styling.
                       </p>
                     </div>
                     <div className="grid gap-3 p-4 border-t pt-2">
@@ -139,17 +103,6 @@ export function Header({
                     </div>
                   </ScrollArea>
                 </NavigationMenuContent>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Button 
-                  variant="ghost" 
-                  className="h-9 px-4 bg-white/50 hover:bg-white/80"
-                  onClick={handleDownload}
-                  disabled={isExporting}
-                >
-                  <Download className="h-4 w-4 mr-2" />
-                  {isExporting ? "Exporting..." : "Download"}
-                </Button>
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <Button 
@@ -191,16 +144,6 @@ export function Header({
       {mobileMenuOpen && (
         <div className="md:hidden border-t border-gray-200">
           <div className="flex flex-col space-y-1 p-3">
-            <Button 
-              variant="ghost" 
-              size="sm"
-              className="justify-start"
-              onClick={handleDownload}
-              disabled={isExporting}
-            >
-              <Download className="h-4 w-4 mr-2" />
-              {isExporting ? "Exporting..." : "Download PDF"}
-            </Button>
             <Button 
               variant="ghost" 
               size="sm"
