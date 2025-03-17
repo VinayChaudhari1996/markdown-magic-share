@@ -185,12 +185,12 @@
     visibility: visible !important;
   }
 
-  /* macOS-like Code Block */
+  /* VS Code-like Code Block */
   .markdown-code {
     @apply relative my-4 rounded-xl overflow-hidden font-mono text-sm break-inside-avoid;
     border: 1px solid rgba(0, 0, 0, 0.1);
-    background-color: white;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 5px 10px -5px rgba(0, 0, 0, 0.04);
+    background-color: #1e1e1e; /* VS Code dark theme background */
+    box-shadow: 0 5px 15px -5px rgba(0, 0, 0, 0.1), 0 3px 8px -5px rgba(0, 0, 0, 0.05);
   }
 
   .markdown-code pre {
@@ -201,11 +201,12 @@
   }
 
   .markdown-code code {
-    @apply font-medium text-gray-900 overflow-visible;
+    @apply font-medium overflow-visible;
     font-size: 0.85rem;
     letter-spacing: 0.3px;
     white-space: pre-wrap;
     word-break: break-word;
+    color: #d4d4d4; /* VS Code default text color */
   }
 
   /* Line styling */
@@ -213,18 +214,32 @@
     @apply transition-colors duration-75;
     white-space: pre-wrap;
     word-break: break-word;
+    padding: 0 2px;
+    height: 1.4em;
+  }
+  
+  .markdown-code .line:hover {
+    background-color: rgba(255, 255, 255, 0.05); /* VS Code line hover */
   }
 
-  /* Syntax highlighting */
+  /* VS Code-style header */
+  .markdown-code .pdf-header {
+    @apply bg-gray-800 text-gray-300;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.3);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  /* Syntax highlighting - VS Code-like */
   .token.comment,
   .token.prolog,
   .token.doctype,
   .token.cdata {
-    @apply text-slate-500;
+    @apply text-green-400 italic;
   }
 
   .token.punctuation {
-    @apply text-slate-400;
+    @apply text-gray-400;
   }
 
   .token.property,
@@ -233,7 +248,7 @@
   .token.number,
   .token.constant,
   .token.symbol {
-    @apply text-blue-500;
+    @apply text-blue-400;
   }
 
   .token.selector,
@@ -241,7 +256,7 @@
   .token.string,
   .token.char,
   .token.builtin {
-    @apply text-emerald-500;
+    @apply text-orange-300;
   }
 
   .token.operator,
@@ -249,15 +264,15 @@
   .token.url,
   .language-css .token.string,
   .style .token.string {
-    @apply text-amber-500;
+    @apply text-yellow-200;
   }
 
   .token.keyword {
-    @apply text-purple-500 font-medium;
+    @apply text-purple-400 font-medium;
   }
 
   .token.function {
-    @apply text-amber-500;
+    @apply text-yellow-300;
   }
   
   .token.important,
@@ -274,11 +289,11 @@
   }
   
   .token.variable {
-    @apply text-orange-500;
+    @apply text-orange-400;
   }
   
   .token.class-name {
-    @apply text-cyan-500;
+    @apply text-cyan-300;
   }
 }
 

@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Check, Copy, TerminalSquare } from 'lucide-react';
+import { Check, Copy, Code as CodeIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { codeBlockThemes } from '@/lib/patterns';
 
@@ -56,20 +56,14 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
       data-pdf-codeblock="true"
       data-language={language}
     >
-      {/* MacOS-like header with traffic light buttons and language badge */}
+      {/* VS Code-like header with language badge */}
       <div 
-        className="flex items-center justify-between px-4 py-3 border-b relative pdf-header"
+        className="flex items-center justify-between px-4 py-2 border-b relative pdf-header"
         style={{ borderColor: theme.borderColor, backgroundColor: theme.lineNumberBg }}
         data-pdf-header="true"
       >
-        <div className="absolute left-4 flex items-center space-x-2">
-          <div className="w-3 h-3 rounded-full bg-red-500 border border-red-600" />
-          <div className="w-3 h-3 rounded-full bg-yellow-500 border border-yellow-600" />
-          <div className="w-3 h-3 rounded-full bg-green-500 border border-green-600" />
-        </div>
-        
-        <div className="mx-auto flex items-center gap-2">
-          <TerminalSquare className="h-4 w-4 text-blue-500" />
+        <div className="flex items-center gap-2">
+          <CodeIcon className="h-4 w-4 text-blue-500" />
           {displayLanguage && (
             <span 
               className="text-xs font-medium uppercase tracking-wide pdf-language" 
