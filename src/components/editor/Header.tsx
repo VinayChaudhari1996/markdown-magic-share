@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Share2, Download, Menu } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
@@ -7,6 +6,7 @@ import { SettingsPanel } from "./SettingsPanel";
 import { useState } from "react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { codeBlockThemes } from "@/lib/patterns";
+import { createPdfExportClone } from "@/utils/markdownProcessor";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -43,6 +43,7 @@ export function Header({
 }: HeaderProps) {
   const { toast } = useToast();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   const handleShare = () => {
     try {
@@ -74,68 +75,31 @@ export function Header({
 
   const handleDownload = async () => {
     const element = document.getElementById('markdown-preview');
-    if (!element) return;
+    if (!element) {
+      toast({
+        title: "Error",
+        description: "Couldn't find the markdown content to export.",
+        variant: "destructive",
+      });
+      return;
+    }
 
+    setIsExporting(true);
     toast({
       title: "Generating PDF...",
       description: "Please wait while we prepare your document.",
     });
 
     try {
-      // Create a deep clone of the element to modify for PDF export
-      const clone = element.cloneNode(true) as HTMLElement;
+      const clone = createPdfExportClone(element);
+      if (!clone) throw new Error("Failed to create export clone");
       
-      // Set fixed width for more predictable PDF layout
-      clone.style.width = '800px';
-      clone.style.padding = '40px';
-      clone.style.backgroundColor = '#ffffff';
+      clone.style.position = 'absolute';
+      clone.style.left = '-9999px';
+      clone.style.top = '0';
+      clone.style.zIndex = '-1000';
+      document.body.appendChild(clone);
       
-      // Force all text to black for PDF visibility
-      const allTextElements = clone.querySelectorAll('p, h1, h2, h3, h4, h5, h6, li, td, th, pre, code, span, a, div');
-      allTextElements.forEach(el => {
-        (el as HTMLElement).style.color = '#000000';
-        (el as HTMLElement).style.opacity = '1';
-        (el as HTMLElement).classList.add('pdf-text');
-      });
-      
-      // Process all math elements (KaTeX)
-      const mathElements = clone.querySelectorAll('.katex, .katex-display, .katex-html');
-      mathElements.forEach(el => {
-        (el as HTMLElement).style.color = '#000000';
-        (el as HTMLElement).style.opacity = '1';
-      });
-      
-      // Specially handle code blocks for PDF
-      const codeBlocks = clone.querySelectorAll('[data-code-block="true"]');
-      codeBlocks.forEach(block => {
-        (block as HTMLElement).style.breakInside = 'avoid';
-        (block as HTMLElement).style.pageBreakInside = 'avoid';
-        (block as HTMLElement).style.border = '1px solid #e2e8f0';
-        (block as HTMLElement).style.borderRadius = '8px';
-        (block as HTMLElement).style.margin = '16px 0';
-        (block as HTMLElement).style.overflow = 'hidden';
-        
-        // Make code block background light
-        const preElements = block.querySelectorAll('pre');
-        preElements.forEach(pre => {
-          (pre as HTMLElement).style.backgroundColor = '#f8fafc';
-          (pre as HTMLElement).style.margin = '0';
-          (pre as HTMLElement).style.padding = '16px';
-        });
-        
-        // Ensure code text is visible
-        const codeLines = block.querySelectorAll('.line');
-        codeLines.forEach(line => {
-          (line as HTMLElement).style.color = '#000000';
-        });
-        
-        const codeElement = block.querySelector('code');
-        if (codeElement) {
-          (codeElement as HTMLElement).style.color = '#000000';
-        }
-      });
-      
-      // PDF generation options
       const opt = {
         margin: [15, 15, 15, 15],
         filename: 'markdown-document.pdf',
@@ -144,27 +108,31 @@ export function Header({
           scale: 2,
           useCORS: true,
           letterRendering: true,
-          logging: true,
-          backgroundColor: '#ffffff'
+          logging: false,
+          backgroundColor: '#ffffff',
+          removeContainer: false,
+          foreignObjectRendering: false,
         },
         jsPDF: { 
           unit: 'mm', 
           format: 'a4', 
           orientation: 'portrait',
-          compressPDF: false
+          compress: false,
+          precision: 16,
+          putTotalPages: true,
         },
-        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+        pagebreak: { 
+          mode: ['avoid-all', 'css', 'legacy'],
+          before: '.page-break-before',
+          after: '.page-break-after',
+          avoid: '.page-break-avoid',
+        }
       };
 
-      // Temporary add the clone to the document for PDF generation
-      clone.style.position = 'absolute';
-      clone.style.left = '-9999px';
-      document.body.appendChild(clone);
-
-      // Convert the clone to PDF and save
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
       await html2pdf().from(clone).set(opt).save();
       
-      // Remove the clone after PDF generation
       document.body.removeChild(clone);
       
       toast({
@@ -178,6 +146,8 @@ export function Header({
         description: "Failed to generate PDF. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -220,9 +190,10 @@ export function Header({
                   variant="ghost" 
                   className="h-9 px-4 bg-white/50 hover:bg-white/80"
                   onClick={handleDownload}
+                  disabled={isExporting}
                 >
                   <Download className="h-4 w-4 mr-2" />
-                  Download
+                  {isExporting ? "Exporting..." : "Download"}
                 </Button>
               </NavigationMenuItem>
               <NavigationMenuItem>
@@ -270,9 +241,10 @@ export function Header({
               size="sm"
               className="justify-start"
               onClick={handleDownload}
+              disabled={isExporting}
             >
               <Download className="h-4 w-4 mr-2" />
-              Download PDF
+              {isExporting ? "Exporting..." : "Download PDF"}
             </Button>
             <Button 
               variant="ghost" 

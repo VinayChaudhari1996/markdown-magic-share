@@ -40,7 +40,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
 
   return (
     <motion.div 
-      className="markdown-code group rounded-xl overflow-hidden break-inside-avoid mb-6"
+      className="markdown-code group rounded-xl overflow-hidden break-inside-avoid mb-6 pdf-code-block"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
