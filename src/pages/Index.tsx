@@ -1,11 +1,11 @@
 
-import MarkdownEditor from "@/components/MarkdownEditor";
+import SmartCanvas from "@/components/SmartCanvas";
 import { Toaster } from "@/components/ui/toaster";
 
 const Index = () => {
   return (
     <>
-      <MarkdownEditor />
+      <SmartCanvas />
       <Toaster />
     </>
   );
